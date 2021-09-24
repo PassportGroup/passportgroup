@@ -1,0 +1,7 @@
+{% if data.notifiable.status == 'approved' %}
+Hey {{ data.recipient.username }},
+Congratulations {{ data.recipient.username }}, you gained your account badge verification
+{% else %}
+Hey {{ data.recipient.username }},
+Your request for identity verification has been denied
+{% endif %}

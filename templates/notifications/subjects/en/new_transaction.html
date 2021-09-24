@@ -1,0 +1,13 @@
+   {% if data.notifiable.type == 'purchase' %}
+        {% if data.notifiable.status == 'pending' %}
+            Purchase of {{ data.notifiable.listing }} completed successfully on {{ site.name }}
+        {% elif data.notifiable.status == 'delivered' %}
+            Item delivered with success by the seller {{ data.sender.username }} on {{ site.name }}
+        {% elif data.notifiable.status == 'received' %}
+            Item received with success by the buyer {{ data.sender.username }} on {{ site.name }}
+        {% elif data.notifiable.status == 'completed' %}
+            Transaction on item {{ data.notifiable.listing }} completed on {{ site.name }}
+        {% endif %}
+   {% elif data.notifiable.type == 'withdrawal' %}
+        Withdrawal successfully completed on {{ site.name }}
+   {% endif %}

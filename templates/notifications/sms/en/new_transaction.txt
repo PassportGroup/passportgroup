@@ -1,0 +1,23 @@
+{% if data.notifiable.type == 'purchase' %}
+    {% if data.notifiable.status == 'pending' %}
+        {% if data.notifiable.username == data.recipient.username %}
+            Purchase of "{{ data.notifiable.listing }}" completed successfully.
+        {% else %}
+            Hi {{ data.recipient.username }},
+            {{ data.sender.username }} has already paid, please deliver the product before receive the money in your wallet
+        {% endif %}
+    {% elif data.notifiable.status == 'delivered' %}
+        Hi {{ data.recipient.username }},
+        {{ data.sender.username }} has already delivered, please confirm you received
+    {% elif data.notifiable.status == 'received' %}
+        Hi {{ data.recipient.username }},
+        {{ data.sender.username }} has confirmed that he has received the listing
+    {% elif data.notifiable.status == 'canceled' %}
+        Hi {{ data.recipient.username }},
+        {{ data.sender.username }} canceled your transaction, your money was returned to you
+    {% elif data.notifiable.status == 'completed' %}
+        Transaction on item {{ data.notifiable.listing }} completed
+    {% endif %}
+{% elif data.notifiable.type == 'withdrawal' %}
+    Withdrawal of {{ data.notifiable.amount }} FCFA successfully completed
+{% endif %}

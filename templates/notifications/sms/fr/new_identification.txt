@@ -1,0 +1,7 @@
+{% if data.notifiable.status == 'approved' %}
+Hey {{ data.recipient.username }},
+Vous avez obtenu votre badge de vérification du badge de votre compte
+{% else %}
+Hey {{ data.recipient.username }},
+Votre requête de vérification d'identité a été rejeté
+{% endif %}

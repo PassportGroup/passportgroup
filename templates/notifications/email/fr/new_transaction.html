@@ -1,0 +1,27 @@
+{% extends '../../layouts/fr_layout.html' %}
+
+{% block content %}
+    {% if data.notifiable.type == 'purchase' %}
+        {% if data.notifiable.status == 'pending' %}
+            {% if data.notifiable.username == data.recipient.username %}
+                L'achat de <strong>{{data.notifiables.listing }}</strong> d'un montant de {{ data.notifiable.amount }} FCFA a été effectué avec succès.
+            {% else %}
+                <p>Salut {{ data.recipient.username }},</p>
+                <p>{{ data.sender.username }} a déjà payé, veuillez livrer le produit avant de recevoir l'argent dans votre porte feuille electronique.</p>
+            {% endif %}
+        {% elif data.notifiable.status == 'delivered' %}
+            <p>Salut {{ data.recipient.username }},</p>
+            <p>{{ data.sender.username }} a déjà livré, veuillez confirmer que vous avez reçu.</p>
+        {% elif data.notifiable.status == 'received' %}
+            <p>Salut {{ data.recipient.username }},</p>
+            <p>{{ data.sender.username }} a confirmé avoir reçu l'annonce</p>
+        {% elif data.notifiable.status == 'canceled' %}
+            <p>Salut {{ data.recipient.username }},</p>
+            <p>{{ data.sender.username }} a annulé votre transaction, votre argent vous a été renvoyé</p>
+        {% elif data.notifiable.status == 'completed' %}
+            Transaction sur l'article {{ data.notifiable.listing }} terminée
+        {% endif %}
+    {% elif data.notifiable.type == 'withdrawal' %}
+        Retrait de {{ data.notifiable.amount }} FCFA effectué avec succès
+    {% endif %}
+{% endblock %}

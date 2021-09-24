@@ -1,0 +1,2 @@
+Hey {{ data.recipient.username }},
+{{ data.sender.username }} vient de publier une nouvelle annonce

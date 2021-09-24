@@ -1,0 +1,26 @@
+{% extends '../../layouts/fr_layout.html' %}
+
+{% block content %}
+    {% if data.notifiable.status == 'pending' %}
+        Salut {{ data.recipient.username }}!
+        <p>
+            Vous avez une nouvelle offre de <strong>{{ data.notifiable.price }} FCFA</strong> sur <strong>{{ data.notifiable.listing.title }}</strong> en vente au prix de <strong>{{ data.notifiable.listing.price }} FCFA</strong> de la part de
+            <strong>{{data.sender.username }}.</strong>
+        </p>
+    {% elif data.notifiable.status == 'accepted' %}
+        Salut {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> a accepter votre offre.</p>
+    {% elif data.notifiable.status == 'canceled' %}
+        Salut {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> a annuler votre offre.</p>
+    {% elif data.notifiable.status == 'declined' %}
+        Salut {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> a rejeter votre offre.</p>
+    {% elif data.notifiable.status == 'countered' %}
+        Salut {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> a fait une contre proposition de <strong>{{ data.notifiable.price }} FCFA</strong> sur votre offre.</p>
+    {% endif %}
+
+    Veuillez ne pas répondre à cet e-mail, votre partenaire commercial ne pourra pas voir votre réponse. Utilisez la boîte de discussion de la page commerciale pour envoyer votre réponse.<br/><br/>
+    <a href="{{ target_url }}">Voir l'offre</a>
+{% endblock %}

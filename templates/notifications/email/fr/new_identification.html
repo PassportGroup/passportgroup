@@ -1,0 +1,11 @@
+{% extends '../../layouts/en_layout.html' %}
+
+{% block content %}
+
+    {% if data.notifiable.status == 'approved' %}
+        <p>Congratulations {{ data.recipient.username }}, you gained your account badge verification</p>
+    {% else %}
+        <p>We are sorry to announce you that you account verification has been rejected</p>
+    {% endif %}
+
+{% endblock %}

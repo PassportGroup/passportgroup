@@ -1,0 +1,9 @@
+{% if data.notifiable.status == 'pending' %}
+    <p>{{ data.sender.username }} a envoyé une nouvelle offre sur {{ site.name }}.</p>
+{% elif data.notifiable.status == 'accepted' %}
+    <p>{{ data.sender.username }} a annulé son offre sur {{ site.name }}.</p>
+{% elif data.notifiable.status == 'declined' %}
+    <p>{{ data.sender.username }} a rejeté votre offre sur {{ site.name }}.</p>
+{% elif data.notifiable.status == 'countered' %}
+    <p>{{ data.sender.username }} a contré votre offre sur {{ site.name }}.</p>
+{% endif %}

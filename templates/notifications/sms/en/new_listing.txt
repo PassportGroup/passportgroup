@@ -1,0 +1,2 @@
+hey {{ data.recipient.username }}
+{{ data.sender.username }} just post a new listing

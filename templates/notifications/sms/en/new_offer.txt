@@ -1,0 +1,17 @@
+
+{% if data.notifiable.status == 'pending' %}
+    hey {{ data.recipient.username }}!
+    You got a new offer from {{ data.sender.username }}
+{% elif data.notifiable.status == 'accepted' %}
+    Hey {{ data.recipient.username }}!
+    {{ data.sender.username }} accepted your offer
+{% elif data.notifiable.status == 'declined' %}
+    Hey {{ data.recipient.username }}!
+    {{ data.sender.username }} declined your offer
+{% elif data.notifiable.status == 'canceled' %}
+    Hey {{ data.recipient.username }}!
+    {{ data.sender.username }} canceled his offer.
+{% elif data.notifiable.status == 'countered' %}
+    Hey {{ data.recipient.username }}!
+    {{ data.sender.username }} made a counter proposal of {{ data.notifiable.price }} FCFA on your offer.
+{% endif %}

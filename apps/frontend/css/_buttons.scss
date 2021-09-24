@@ -1,0 +1,88 @@
+$danger: #f14668;
+$success: #3abb81;
+$white: #fff;
+$warning: #ffdd57;
+
+.btn{
+    background-color: $white;
+    border-color: #dbdbdb;
+    border-width: 1px;
+    color: #363636;
+    cursor: pointer;
+    justify-content: center;
+    padding-bottom: calc(.5em - 1px);
+    padding-left: 1em;
+    padding-right: 1em;
+    padding-top: calc(.5em - 1px);
+    text-align: center;
+    white-space: nowrap;
+    &.is-small:not(.is-rounded){
+      border-radius: 2px;
+    }
+    &.is-danger {
+      background-color: $danger;
+      border-color: transparent;
+      color: $white;
+    }
+    &.is-warning {
+      background-color: $warning;
+      border-color: transparent;
+      color: $white;
+    }
+    &.is-success{
+      background-color: $success;
+      border-color: transparent;
+      color: $white;
+    }
+    &.is-small {
+      font-size: .75rem;
+    }
+    &.is-danger.is-outlined {
+      background-color: transparent;
+      border-color: $danger;
+      color: $danger;
+      &:hover{
+        color: $white;
+        background-color: $danger;
+      }
+    }
+    &.is-success.is-outlined {
+      background-color: transparent;
+      border-color: $success;
+      color: $success;
+      &:hover{
+        color: $white;
+        background-color: $success;
+      }
+    }
+    &.is-warning.is-outlined {
+      background-color: transparent;
+      border-color: $warning;
+      color: $warning;
+      &:hover{
+        color: $white;
+        background-color: $warning;
+      }
+    }
+  }
+
+.tag {
+    @apply font-bold relative text-sm h-7 cursor-pointer mr-1 mb-1 inline-flex items-center px-3 py-2 rounded-md;
+    &:not(.active){
+      border-color: transparent;
+      color: #00947e;
+      background-color: #ebfffc;
+    }
+
+    &.active{
+      background-color: #00d1b2;
+      color: #fff;
+    }
+}
+
+
+.swal2-actions {
+    @apply flex items-center justify-between md:justify-center gap-1 md:gap-4 w-full px-2;
+}
+
+

@@ -1,0 +1,3 @@
+Hey {{ data.recipient.username }}
+Vous avez un nouveau message de {{ data.sender.username }}
+

@@ -1,0 +1,18 @@
+.overflow-scroll-container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.overflow-scroll-container::-webkit-scrollbar-track{
+    background-color: #B1ECE4;
+}
+
+.overflow-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #00d1b2;
+}
+
+.none-overflow-container::-webkit-scrollbar {
+  width: 0px;
+  height: 0px;
+}
+

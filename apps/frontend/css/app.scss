@@ -1,0 +1,17 @@
+// 3rd Parties
+@import '~vue-tel-input/dist/vue-tel-input.css';
+@import "~vue-multiselect/dist/vue-multiselect.min.css";
+@import "~tippy.js/themes/light.css";
+@import "~tippy.js/themes/light-border.css";
+@import "~tippy.js/themes/google.css";
+@import "~tippy.js/themes/translucent.css";
+@import '~sweetalert2/dist/sweetalert2.min.css';
+
+@import "global";
+@import "tailwind";
+@import "main";
+@import "buttons";
+@import "multiselect";
+@import "scroolbar";
+@import "input";
+@import "modal";

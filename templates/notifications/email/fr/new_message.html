@@ -1,0 +1,10 @@
+{% extends '../../layouts/fr_layout.html' %}
+
+{% block content %}
+    Salut {{ data.recipient.username }},<br/><br/>
+    {{ data.sender.username }} vient de vous envoyer un message sur votre annonce. Vérifiez-le et répondez dans la boîte de discussion.
+    <p id="msg">{{ data.notifiable.message }}</p>
+
+    Veuillez ne pas répondre à cet e-mail, votre partenaire commercial ne pourra pas voir votre réponse. Utilisez la boîte de discussion de la page commerciale pour envoyer votre réponse.<br/>
+    <a href="{{ target_url }}">Voir le message</a>
+{% endblock %}

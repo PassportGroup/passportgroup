@@ -1,0 +1,8 @@
+{% extends '../../layouts/fr_layout.html' %}
+
+{% block content %}
+    Salut {{ data.recipient.username }},<br/><br/>
+    {{ data.sender.username }} vient de publier une nouvelle annonce. Vérifiez-le et demandez ou faites une offre si vous êtes intéressé.
+    <br/><br/>
+    <a href="{{ target_url }}">Voir l'annonce</a>
+{% endblock %}

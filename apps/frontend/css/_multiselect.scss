@@ -1,0 +1,20 @@
+.location .multiselect__tags{
+  border-radius: 0;
+  border-left: 0;
+  border-right: 0;
+  @apply h-10;
+  &.multiselect__input, &.multiselect__single{
+    @apply focus:outline-none border-0 border-white;
+  }
+}
+
+.category .multiselect__tags{
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  border-right: 0;
+  @apply h-10;
+}
+
+.multiselect__content-wrapper{
+  @extend .overflow-scroll-container;
+}

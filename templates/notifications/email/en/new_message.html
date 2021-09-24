@@ -1,0 +1,10 @@
+{% extends '../../layouts/en_layout.html' %}
+
+{% block content %}
+    Hi {{ data.recipient.username }},<br/><br/>
+    {{ data.sender.username }} just sent you a message in your trade. Check it out and respond in the chat box.
+    <p id="msg">{{ data.notifiable.message }}</p>
+
+    Please do not reply to this email your trade partner will not be able to see your response. Use the chat box on the trade page to send your response.<br/>
+    <a href="{{ target_url }}">View message</a>
+{% endblock %}

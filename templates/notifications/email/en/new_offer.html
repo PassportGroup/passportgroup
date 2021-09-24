@@ -1,0 +1,21 @@
+{% extends '../../layouts/en_layout.html' %}
+
+{% block content %}
+    {% if data.notifiable.status == 'pending' %}
+        hello {{ data.recipient.username }}!
+        <p>You have a new offer of {{ data.notifiable.price }} FCFA on <strong>{{ data.notifiable.listing.title }}</strong> being sold as {{ data.notifiable.listing.price }} FCFA from <strong>{{ data.sender.username }}</strong></p>
+    {% elif data.notifiable.status == 'accepted' %}
+        Hello {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> accepted your offer.</p>
+    {% elif data.notifiable.status == 'canceled' %}
+        Hello {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> canceled his offer.</p>
+    {% elif data.notifiable.status == 'declined' %}
+        Hello {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> rejected your offer.</p>
+    {% elif data.notifiable.status == 'countered' %}
+        Hello {{ data.recipient.username }}!
+        <p><strong>{{ data.sender.username }}</strong> made a counter proposal of {{ data.notifiable.price }} FCFA on your offer.</p>
+    {% endif %}
+    <a href="{{ target_url }}">view offer</a>
+{% endblock %}

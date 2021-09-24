@@ -1,0 +1,16 @@
+{% if data.notifiable.status == 'pending' %}
+    Salut {{ data.recipient.username }}!
+    Vous avez une nouvelle offre de {{data.sender.username }}
+{% elif data.notifiable.status == 'accepted' %}
+    Salut {{ data.recipient.username }}!
+    {{ data.sender.username }} a accepte votre offre
+{% elif data.notifiable.status == 'canceled' %}
+    Salut {{ data.recipient.username }}!
+    {{ data.sender.username }} a annulé son offre
+{% elif data.notifiable.status == 'declined' %}
+    Salut {{ data.recipient.username }}!
+    {{ data.sender.username }} a rejeté votre offre
+{% elif data.notifiable.status == 'countered' %}
+    Salut {{ data.recipient.username }}!
+    {{ data.sender.username }} a fait une contre proposition de {{ data.notifiable.price }} FCFA sur votre offre
+{% endif %}

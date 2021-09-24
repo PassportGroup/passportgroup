@@ -1,0 +1,8 @@
+{% extends '../../layouts/en_layout.html' %}
+
+{% block content %}
+    Hi {{ data.recipient.username }},<br/><br/>
+    <strong>{{ data.sender.username }}</strong> started to follow you
+    <p>Please do not reply to this email your follower wil not be able to see your response. Click the button below to follow him back.</p>
+    <a href="{{ target_url }}">View Profile</a>
+{% endblock %}
