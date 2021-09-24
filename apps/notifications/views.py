@@ -78,4 +78,3 @@ def mark_notification_as_read(request, notification_id):
     notification.unread = False
     notification.save()
     return JsonResponse({}, status=201)
-
