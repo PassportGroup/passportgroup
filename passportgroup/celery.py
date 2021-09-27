@@ -18,10 +18,10 @@ def debug_task(self):
     print(f'Request: {self.request!r}')
 
 
-app.conf.beat_schedule = {
-    # Executes every day night at 0:00.
-    'delete-notification-with-none-relationship': {
-        'task': 'apps.notifications.tasks.delete_notifications_with_none_relation',
-        'schedule': crontab(minute=0, hour=0),
-    },
-}
+# app.conf.beat_schedule = {
+#     # Executes every day night at 0:00.
+#     'delete-notification-with-none-relationship': {
+#         # 'task': 'apps.notifications.tasks.delete_notifications_with_none_relation',
+#         'schedule': crontab(minute=0, hour=0),
+#     },
+# }

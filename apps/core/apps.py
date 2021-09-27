@@ -22,6 +22,6 @@ def share_auth(request):
 
 
 class CoreConfig(AppConfig):
-    name = 'core'
+    name = 'apps.core'
 
 

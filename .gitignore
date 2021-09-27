@@ -121,3 +121,6 @@ media/
 !**/migrations/__init__.py
 __ pycache __
 /staticfiles/
+
+gmail_api_token.pickle
+gmail_credentials.json

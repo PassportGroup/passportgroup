@@ -3,7 +3,7 @@
   let events = [];
 
   // Get highest z-index
-  function getHighestZindex() {
+  function getHighestZIndex() {
     let zIndex = 52;
     cash(".modal").each(function() {
       if (
@@ -38,7 +38,7 @@
     setTimeout(() => {
       cash(el)
         .addClass("show")
-        .css("z-index", getHighestZindex() + 1);
+        .css("z-index", getHighestZIndex() + 1);
     }, 200);
 
     // Setting up modal scroll
@@ -61,8 +61,8 @@
     // Trigger callback function
     events.forEach(function(val, key) {
       if (
-        cash(el).attr("id") == cash(val.el).attr("id") &&
-        val.event == "on.show"
+        cash(el).attr("id") === cash(val.el).attr("id") &&
+        val.event === "on.show"
       ) {
         events[key].triggerCallback = true;
       }
@@ -82,7 +82,7 @@
 
         // Add scroll to highest z-index modal if exist
         cash(".modal").each(function() {
-          if (parseInt(cash(this).css("z-index")) === getHighestZindex()) {
+          if (parseInt(cash(this).css("z-index")) === getHighestZIndex()) {
             cash(this)
               .addClass("overflow-y-auto")
               .css("padding-left", getScrollbarWidth(this) + "px");
@@ -90,7 +90,7 @@
         });
 
         // Return back scroll to body if no more modal showed up
-        if (getHighestZindex() == 52) {
+        if (getHighestZIndex() === 52) {
           cash("body")
             .removeClass("overflow-y-hidden")
             .css("padding-right", "");
@@ -105,8 +105,8 @@
       // Trigger callback function
       events.forEach(function(val, key) {
         if (
-          cash(el).attr("id") == cash(val.el).attr("id") &&
-          val.event == "on.hide"
+          cash(el).attr("id") === cash(val.el).attr("id") &&
+          val.event === "on.hide"
         ) {
           events[key].triggerCallback = true;
         }
@@ -164,10 +164,10 @@
   // Detect show or hide event
   setInterval(function() {
     events.forEach(function(val, key) {
-      if (val.event == "on.show" && val.triggerCallback) {
+      if (val.event === "on.show" && val.triggerCallback) {
         val.callback();
         events[key].triggerCallback = false;
-      } else if (val.event == "on.hide" && val.triggerCallback) {
+      } else if (val.event === "on.hide" && val.triggerCallback) {
         val.callback();
         events[key].triggerCallback = false;
       }

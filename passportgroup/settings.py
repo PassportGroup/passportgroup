@@ -19,7 +19,8 @@ SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-#Mail configurations
+
+# Mail configurations
 if os.getenv('APP_ENV') == 'production':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
     EMAIL_HOST = os.getenv('MAIL_HOST', 'smtp.gmail.com')
@@ -41,7 +42,11 @@ if os.getenv('APP_ENV') == 'local':
 else:
     ALLOWED_HOSTS = ['5.189.177.4']
 
-# AUTH_USER_MODEL = 'account.Account'
+
+PASSPORT_BASE_EMAIL = os.getenv('GMAIL_ID')
+PASSPORT_FROM_EMAIL = os.getenv('FROM_GMAIL_ID')
+
+AUTH_USER_MODEL = 'account.Account'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
@@ -52,7 +57,6 @@ LOGOUT_REDIRECT_URL = 'home'
 
 INSTALLED_APPS = [
     # 'apps.core',
-    'apps.notifications',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -61,7 +65,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
-    # 'apps.account'
+    'apps.account',
     'channels',
     'rest_framework',
     'inertia',
@@ -166,7 +170,7 @@ LANGUAGE_CODE = 'en'
 prefix_default_language = True
 
 LANGUAGES = [
-    ('fr', _('French')),
+    ('he', _('Hebrew')),
     ('en', _('English')),
 ]
 
@@ -186,7 +190,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 if DEBUG:
     STATICFILES_DIRS = [
@@ -205,17 +210,11 @@ INERTIA_SHARE = 'apps.core.apps.share_auth'
 JS_ROUTES_INCLUSION_LIST = [
     'home',
     'login',
-    'register',
     'logout',
-    'listing',
+    'mails.index',
+    'mails.detail'
     'user.profile',
-    'add',
-    'edit',
-    'sold',
-    'delete',
     'search',
-    'wishlist',
-    'inbox',
     'pusher.authentication',
     'password.forgot',
     'password.change',
@@ -243,7 +242,7 @@ INTERNAL_IPS = [
 
 DEBUG_TOOLBAR_CONFIG = {
     'EXTRA_SIGNALS': [
-        'apps.notifications.signals.passportgroup_notify',
+        # 'apps.notifications.signals.passportgroup_notify',
     ],
 }
 
@@ -264,6 +263,7 @@ APP_DESCRIPTION = _("Process emails passportgroup")
 APP_KEYWORDS = _("gmail, drive, pdf, python, passportgroup")
 USER_ID_COOKIE_NAME = 'bu_uuid'
 
+DEFAULT_PROFILE_IMG_PATH = 'default_profile.png'
 
 #META SETTINGS
 META_SITE_NAME = 'Passport Group'

@@ -8,6 +8,9 @@ import string
 
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from django.core.paginator import Paginator, EmptyPage
+from urllib.parse import urlencode, urlparse,  urlunparse, parse_qs
+
 
 Account = get_user_model()
 
@@ -60,8 +63,8 @@ def generate_unique_username(username):
 def k_number(number):
     if number < 100:
         return number
-    k_number = number/1000
-    k_number = int(k_number) if str(k_number).split('.')[1] == str(0) else round(k_number, 1)
+    num = number/1000
+    num = int(num) if str(num).split('.')[1] == str(0) else round(num, 1)
     return f'{k_number}K'
 
 
@@ -119,3 +122,62 @@ def split_query(query, reverse=False):
             result.append(f'{query_words[0]} {query_words[length - 1]}')
 
     return list(set(query_words + result + [' '.join(query_words)]))
+
+
+def paginate(objects, current_url, items_per_page, current_page = 1):
+    links = []
+    p = Paginator(objects, items_per_page)
+    page_number = int(current_page)
+    url = parse_url(current_url)
+
+    try:
+        page_obj = p.page(page_number)
+        objs = page_obj.object_list
+
+    except EmptyPage:
+        page_obj = None
+        objs = []
+        links = []
+
+    if page_obj:
+        if page_obj.has_previous():
+            prev_page = page_obj.previous_page_number()
+            links.append(
+                {
+                    'label': '« Previous',
+                    'url': f'{url}?page={prev_page}' if '?' not in url else f'{url}&page={prev_page}',
+                }
+            )
+
+        for i in p.page_range:
+            active = False
+            if i == page_number:
+                active = True
+
+            links.append(
+                {
+                    'label': i,
+                    'url': f'{url}?page={i}' if '?' not in url else f'{url}&page={i}',
+                    'active': active
+                }
+            )
+
+        if page_obj.has_next():
+            next_page = page_obj.next_page_number()
+            links.append(
+                {
+                    'label': 'Next »',
+                    'url': f'{url}?page={next_page}' if '?' not in url else f'{url}&page={next_page}',
+                }
+            )
+    return objs, links
+
+
+def parse_url(url):
+    u = urlparse(url)
+    query = parse_qs(u.query, keep_blank_values=True)
+    query.pop('page', None)
+    u = u._replace(query=urlencode(query, True))
+    return urlunparse(u)
+
+

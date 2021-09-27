@@ -7,7 +7,6 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.models import Site
-from apps.notifications import tasks
 
 
 class Mail:
@@ -85,14 +84,14 @@ class Mail:
             'protocol': "https" if request.is_secure() else "http",
         }
 
-        tasks.send_email_notifications.delay(
-            "notifications/subjects/en/id_verification.html",
-            "notifications/email/en/id_verification.html",
-            context,
-            os.getenv('MAIL_SUPPORT_ADDRESS', 'hello@passportgroup.il.co'),
-            600,
-            Mail.MAIL_FROM,
-        )
+        # tasks.send_email_notifications.delay(
+        #     "notifications/subjects/en/id_verification.html",
+        #     "notifications/email/en/id_verification.html",
+        #     context,
+        #     os.getenv('MAIL_SUPPORT_ADDRESS', 'hello@passportgroup.il.co'),
+        #     600,
+        #     Mail.MAIL_FROM,
+        # )
 
     @staticmethod
     def send_reset_email_link(user, request):

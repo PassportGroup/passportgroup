@@ -12,7 +12,6 @@
                 <input type="password" id="password" autocomplete="off" v-model="form.password" :placeholder="$t('form.password-placeholder')" class="input pb-8"/>
                 <div class="form-error" v-if="$page.props.errors && $page.props.errors.password">{{ $page.props.errors.password[0].message }}</div>
             </div>
-
             <label class="my-4 select-none flex items-center" for="remember">
                 <input id="remember" v-model="form.remember" class="mr-1 input input--switch" type="checkbox">
                 <span class="text-xs text-gray-700">{{ $t('form.remember-me') }}</span>
@@ -25,9 +24,7 @@
 </template>
 
 <script>
-import PassportButton from '@/components/PassportButton'
-import AuthLayout from "@/layouts/AuthLayout"
-import FlashMessages from "../../components/FlashMessages";
+import AuthLayout from "../../layouts/AuthLayout"
 
 export default {
     name: 'Login',
@@ -38,11 +35,6 @@ export default {
     props: {
         flash: Object,
         errors: Object,
-    },
-    components: {
-        FlashMessages,
-        PassportButton,
-        AuthLayout
     },
     data() {
         return {

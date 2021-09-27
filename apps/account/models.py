@@ -75,7 +75,7 @@ class Account(AbstractBaseUser):
     verified_phone_at = models.DateTimeField(verbose_name="verified phone at", blank=True, null=True)
     verified_email_at = models.DateTimeField(verbose_name="verified email at", blank=True, null=True)
     verified_user_at = models.DateTimeField(verbose_name="verified user at", blank=True, null=True)
-    signup_provider = models.CharField(max_length=10, choices=SIGNUP_PROVIDERS, default=PASSPORTGROUP)
+    signup_provider = models.CharField(max_length=15, choices=SIGNUP_PROVIDERS, default=PASSPORTGROUP)
     two_factor_auth = models.BooleanField(default=False)
     locale = models.CharField(max_length=2, choices=LOCALES, default=ENGLISH)
     uid = models.CharField(max_length=50, blank=True, null=True)

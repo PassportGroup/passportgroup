@@ -17,6 +17,9 @@ from django.core.exceptions import ValidationError
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from apps.utils import *
 from django.utils.translation import gettext as _
+from apps.core.services.gmail_api.common import gmail_authenticate, search_messages
+from apps.core.services.gmail_api.read_emails import read_message
+from datetime import datetime, timedelta
 
 # Create your views here.
 
@@ -38,9 +41,9 @@ def login_view(request):
         form = LoginForm(request.POST)
 
         if form.is_valid():
-            phone_number = request.POST.get('phone_number').replace(' ', '')
+            email = request.POST.get('email').replace(' ', '')
             password = request.POST.get('password')
-            user = authenticate(request, phone=phone_number, password=password)
+            user = authenticate(request, email=email, password=password)
             _next = request.POST.get('next')
             if user is not None and user.is_active:
                 login(request, user)
@@ -50,12 +53,95 @@ def login_view(request):
         else:
             share_flash(request, errors=json.loads(form.errors.as_json()))
 
-    return render_inertia(request, 'Auth/Login')
+    return render_inertia(request, 'Index')
 
 
 def logout_view(request):
     logout(request)
     return redirect(reverse('home'))
+
+
+def mail_listing_view(request):
+    query = request.GET.get('query', None)
+    start_date_query = request.GET.get('start_date', None) or datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    end_date_query = request.GET.get('end_date', None)
+    page = request.GET.get('page', 1)
+
+    begin_date = datetime.strptime(start_date_query, '%Y-%m-%dT%H:%M:%S.%fZ')
+    end_date = begin_date + timedelta(14)
+    if end_date_query:
+        end_date = datetime.strptime(end_date_query, '%Y-%m-%dT%H:%M:%S.%fZ')
+
+    try:
+        gmail_service = gmail_authenticate()
+        # Build query from this
+        query = "after:" + begin_date.strftime('%Y/%m/%d') + " before:" + end_date.strftime('%Y/%m/%d')
+        mails = search_messages(gmail_service, query)
+        final_mails = []
+        for mail in mails:
+            data = read_message(gmail_service, mail)
+            if data:
+                # process data on drive
+                print(data)
+                final_mails.append(data)
+    except Exception:
+        final_mails = [
+            {
+                'thread_id': '17c12b2801d9e9a7',
+                'snippet': 'This is a copy of a security alert sent to m.laurent@waspito.com. muarachmann@gmail.com is the recovery email for this account. If you don&#39;t recognize this account, disconnect it. Your email was',
+                'is_approved': True,
+                'date': 'Thu, 23 Sep 2021 12:47:39 GMT',
+                'message_id': '<lle25t-sS_LSlEVcIbqSGw@notifications.google.com>',
+                'subject': 'Your email is now a recovery email for m.laurent@waspito.com'
+             },
+            {
+                'thread_id': '17c12b24b432a919',
+                'snippet': 'Verify your recovery email Google received a request to use muarachmann@gmail.com as a recovery email for Google Account m.laurent@waspito.com. Use this code to finish setting up this recovery email:',
+                'is_approved': False,
+                'message_id': '<000000000000737c4905cca90855@google.com>',
+                'date': 'Thu, 23 Sep 2021 12:47:26 +0000',
+                'subject': 'Email verification code: 546595'
+            },
+            {
+                'thread_id': '17bdebb761b067a2',
+                'snippet': 'Hello here is the access to your portal insurance.waspito.com -- MUA N. LAURENT: Lead Software Engineer WASPITO (Health without a step) m.laurent@waspito.com',
+                'is_approved': True,
+                'date': 'Mon, 13 Sep 2021 11:37:01 +0100',
+                'message_id': '<CAB8+b9dDqVgwG73aAEwsGz2LcbsKi0b7xFUqQmEPc+DSPeps0g@mail.gmail.com>',
+                'subject': 'Insurance Platform'
+            },
+            {
+                'thread_id': '17bdebb761b067a2',
+                'snippet': 'Hello here is the access to your portal insurance.waspito.com -- MUA N. LAURENT: Lead Software Engineer WASPITO (Health without a step) m.laurent@waspito.com',
+                'is_approved': True,
+                'date': 'Mon, 13 Sep 2021 11:37:01 +0100',
+                'message_id': '<CAB8+b9dDqVgwG73aAEwsGz2LcbsKi0b7xFUqQmEPc+DSPeps0g@mail.gmail.com>',
+                'subject': 'Insurance Platform'
+            }
+        ]
+
+    # paginate data
+    mails_obj, links = paginate(
+        objects=final_mails,
+        current_url=request.build_absolute_uri(),
+        items_per_page=50,
+        current_page=page
+    )
+    return render_inertia(
+        request,
+        'Dashboard/Mails/Index',
+        props={
+            'mails': final_mails,
+            'query': query,
+            'start_date': start_date_query,
+            'end_date': end_date_query,
+            'links': links
+        }
+    )
+
+
+def mail_details_view(request):
+    return render_inertia(request, 'Dashboard/Mails/Detail')
 
 
 

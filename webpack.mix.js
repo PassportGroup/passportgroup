@@ -5,7 +5,7 @@ const path = require('path')
 mix.js('apps/frontend/js/index.js', 'build')
     .extract()
     .sass('apps/frontend/css/app.scss', 'build')
-    .vue({ version: 2, runtimeOnly: true })
+    .vue({ runtimeOnly: true })
     .setPublicPath('static')
     .options({
         processCssUrls: false,
@@ -18,7 +18,8 @@ mix.js('apps/frontend/js/index.js', 'build')
     })
     .webpackConfig({
         output: {
-            chunkFilename: 'js/[name].js?id=[chunkhash]',
+            publicPath: '/static/',
+            chunkFilename: 'build/[name].js?id=[chunkhash]',
         },
         resolve: {
             extensions: ['.js', '.vue', '.json'],

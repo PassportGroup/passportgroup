@@ -8,7 +8,6 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 User = get_user_model()
 from apps.core.serializers import NotificationSettingSchema
-from apps.notifications.models import NotificationSetting
 from django.utils import timezone
 from datetime import timedelta
 from django.http import JsonResponse
@@ -89,50 +88,6 @@ def settings_view(request):
         'User/Settings/ProfileInformation'
     )
 
-@login_required
-def notifications_view(request):
-    if request.method == 'POST':
-        follower_settings = json.loads(request.POST.get('follower_settings'))
-        offer_settings = json.loads(request.POST.get('offer_settings'))
-        message_settings = json.loads(request.POST.get('message_settings'))
-        listing_settings = json.loads(request.POST.get('listing_settings'))
-        transaction_settings = json.loads(request.POST.get('transaction_settings'))
-
-        if request.user.notificationsetting_set.filter(type = 'follower').exists():
-            request.user.notificationsetting_set.filter(type = 'follower').update(web = follower_settings['web'], sms = follower_settings['sms'], email = follower_settings['email'])
-        else:
-            NotificationSetting(user = request.user, type = 'follower', web = follower_settings['web'], sms = follower_settings['sms'], email = follower_settings['email']).save()
-
-        if request.user.notificationsetting_set.filter(type = 'offer').exists():
-            request.user.notificationsetting_set.filter(type = 'offer').update(web = offer_settings['web'], sms = offer_settings['sms'], email = offer_settings['email'])
-        else:
-            NotificationSetting(user = request.user, type = 'offer', web = offer_settings['web'], sms = offer_settings['sms'], email = offer_settings['email']).save()
-
-        if request.user.notificationsetting_set.filter(type = 'message').exists():
-            request.user.notificationsetting_set.filter(type = 'message').update(web = message_settings['web'], sms = message_settings['sms'], email = message_settings['email'])
-        else:
-            NotificationSetting(user = request.user, type = 'message', web=message_settings['web'], sms=message_settings['sms'], email=message_settings['email']).save()
-
-        if request.user.notificationsetting_set.filter(type = 'listing').exists():
-            request.user.notificationsetting_set.filter(type = 'listing').update(web = listing_settings['web'], sms = listing_settings['sms'], email = listing_settings['email'])
-        else:
-            NotificationSetting(user = request.user, type = 'listing', web = listing_settings['web'], sms = listing_settings['sms'], email = listing_settings['email']).save()
-
-        if request.user.notificationsetting_set.filter(type = 'transaction').exists():
-            request.user.notificationsetting_set.filter(type = 'transaction').update(web = transaction_settings['web'], sms = transaction_settings['sms'], email = transaction_settings['email'])
-        else:
-            NotificationSetting(user = request.user, type = 'transaction', web = transaction_settings['web'], sms = transaction_settings['sms'], email = transaction_settings['email']).save()
-
-    return render_inertia(
-        request,
-        'User/Settings/Notifications',
-        props= {
-            'notifications_settings': {
-                'message':  NotificationSettingSchema().dump(request.user.notificationsetting_set.filter(type = 'message').first()),
-                'listing':  NotificationSettingSchema().dump(request.user.notificationsetting_set.filter(type = 'listing').first()),
-            }
-        }
-    )
 
 @login_required
 def password_change_view(request):

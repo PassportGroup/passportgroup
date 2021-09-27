@@ -16,23 +16,14 @@
 
 <script>
 
-import PassportButton from "../../components/PassportButton";
-import AuthLayout from "../../layouts/AuthLayout";
-import Icon from "../../components/Icon";
-import Alert from "../../components/Alert";
+import AuthLayout from "../../layouts/AuthLayout"
 
 export default {
     name: "ForgotPassword",
-    components: {
-        Alert,
-        AuthLayout,
-        PassportButton,
-        Icon
-    },
+    layout: AuthLayout,
     props: {
         errors: Object
     },
-    layout: AuthLayout,
     data() {
         return {
             email: null,

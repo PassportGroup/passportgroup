@@ -1,5 +1,4 @@
 from marshmallow import Schema, fields, validate
-from apps.notifications.models import Notification
 from django.db.models import Q
 from apps.utils import k_number, round_rate
 from django.conf import settings
@@ -42,48 +41,3 @@ class UserSchema(Schema):
 
 class ProfileSchema(Schema):
     user = fields.Str()
-
-
-class NotificationSchema(Schema):
-    id = fields.Integer()
-    type = fields.Str()
-    recipient = fields.Method('get_recipient')
-    sender = fields.Method('get_sender')
-    notifiable = fields.Method('get_notifiable')
-    created_at = fields.Function(lambda obj: str(obj.timestamp))
-    unread_count = fields.Function(lambda obj: Notification.objects.count_unread(obj.recipient))
-    timesince = fields.Function(lambda obj: timesince_(obj.timestamp))
-
-    def get_recipient(self, obj):
-        return {
-            'url': reverse('user.profile', kwargs={'username': obj.recipient.username}).replace('/en', '').replace('/fr',''),
-            'username': obj.recipient.username,
-            'profile': settings.MEDIA_URL + str(obj.recipient.profile_image),
-        }
-
-    def get_sender(self, obj):
-        return {
-            'url': reverse('user.profile', kwargs={'username': obj.sender.username}).replace('/en', '').replace('/fr',''),
-            'username': obj.sender.username,
-            'profile': settings.MEDIA_URL + str(obj.sender.profile_image),
-        } if obj.sender else None
-
-    # def get_notifiable(self, obj):
-    #     if isinstance(obj.notifiable, AC):
-    #         slug = obj.notifiable.slug
-    #         return {
-    #             'url': reverse('listing', kwargs={'slug': slug}).replace('/en', '').replace('/fr',''),
-    #             'title': obj.notifiable.title,
-    #             'slug': slug
-    #         }
-    #
-    #     else:
-    #         return None
-
-
-class NotificationSettingSchema(Schema):
-    id = fields.Integer()
-    type = fields.Str()
-    email = fields.Boolean()
-    sms = fields.Boolean()
-    web = fields.Boolean()

@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 
 class LoginForm(forms.Form):
-    phone_number = forms.CharField()
+    email = forms.CharField()
     password = forms.CharField()
 
 

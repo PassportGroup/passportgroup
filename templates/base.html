@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load js_routes_tags mix static i18n %}{% get_current_language as LANGUAGE_CODE %}
+<!DOCTYPE html>{% load  passport_filters js_routes_tags mix static i18n %}{% get_current_language as LANGUAGE_CODE %}
 <html lang="{{ LANGUAGE_CODE }}" translate="no" dir="{% if LANGUAGE_CODE|language_bidi %}rtl{% else %}ltr{% endif %}" prefix="og: http://ogp.me/ns#">
 <head>
     <meta charset="UTF-8"/>
@@ -24,17 +24,15 @@
     <link rel="stylesheet" href="{% mix 'build/app.css' 'static' %}"/>
     {% js_routes %}
 </head>
-<body class="m-0 p-0 font-lato overflow-x-hidden border-t-2 border-gray-200 overflow-scroll-container">
+<body class="m-0 p-0 overflow-scroll-container border-t-2 border-green-400 font-lato bg-gray-900 dark:bg-dark-1">
 {% csrf_token %}
-{{ page|json_script:"page" }}
-
-<div id="app"></div>
-<script src="{% mix 'build/index.js' 'static' %}"></script>
-<script src="{% mix 'build/vendor.js' 'static' %}"></script>
-<script src="{% mix 'build/manifest.js' 'static' %}"></script>
+<div id="app" data-page="{{ page|inertia_load }}"></div>
 <script type="text/javascript">
     window.default_locale = "{{ LANGUAGE_CODE }}";
     window.fallback_locale = "{{ LANGUAGE_CODE }}";
 </script>
+<script src="{% mix 'build/index.js' 'static' %}"></script>
+<script src="{% mix 'build/vendor.js' 'static' %}"></script>
+<script src="{% mix 'build/manifest.js' 'static' %}"></script>
 </body>
 </html>

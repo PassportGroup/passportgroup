@@ -1,6 +1,6 @@
 <template>
     <div>
-        <VTNotifications />
+        <FlashMessages />
         <div class="w-full mx-auto max-w-8xl overflow-hidden h-screen bg-white flex flex-row justify-items-center lg:border lg:border-r lg:border-gray-100 lg:shadow-lg">
             <div class="w-full lg:w-5/12 hidden lg:block bg-blue-100 h-screen relative shadow-lg">
                 <div class="flex items-center justify-center my-10">
@@ -36,15 +36,13 @@
 </template>
 
 <script>
-    import VTNotifications from "../components/VTNotifications";
-    import Icon from "../components/Icon";
-    import LanguageSwitcher from "../components/LanguageSwitcher";
+    import LanguageSwitcher from "../shared/LanguageSwitcher";
+    import FlashMessages from "../shared/helpers/FlashMessages";
     export default {
         name: "AuthLayout",
         components: {
-            LanguageSwitcher,
-            Icon,
-            VTNotifications
+          FlashMessages,
+          LanguageSwitcher,
         },
         props: {
             page: {
@@ -57,9 +55,3 @@
         }
     }
 </script>
-
-<style scoped>
-    .max-w-8xl {
-        max-width: 90rem;
-    }
-</style>

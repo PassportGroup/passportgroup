@@ -38,9 +38,8 @@
 </template>
 
 <script>
+import AuthLayout from "../../layouts/AuthLayout"
 import { required, minLength, sameAs } from 'vuelidate/lib/validators'
-import AuthLayout from "@/layouts/AuthLayout";
-import PassportButton from "@/components/PassportButton";
 
 export default {
     name: 'ResetPassword',
@@ -50,10 +49,6 @@ export default {
     },
     props: {
         email: String,
-    },
-    components: {
-        PassportButton,
-        AuthLayout,
     },
     data() {
         return {

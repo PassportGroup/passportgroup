@@ -1,63 +1,88 @@
 <template>
-    <main-layout menu="home" :categories="main_categories">
-        <listing-list ref="listingList" class="px-2 md:px-8 mt-2" :listings="results" :is_full_screen="true"/>
-        <infinite-loading  @infinite="getInitialData" :identifier="infiniteId">
-            <div slot="spinner" class="my-20">
-                <passport-loader :loading="true"/>
-            </div>
-            <div slot="no-more"></div>
-            <div slot="no-results">
-                 <empty-list v-if="results.length === 0" :content="$t('general.no-mails')"/>
-            </div>
-        </infinite-loading>
-    </main-layout>
+    <div>
+      <section class="text-gray-600 body-font">
+        <div class="mx-20 px-2 py-12 flex flex-wrap items-center">
+          <div class="w-full md:w-3/5 p-5">
+             <span class="text-xl font-semibold flex-shrink-0 text-white bg-gray-50 bg-opacity-20 rounded px-3 py-2 sm:text-base lg:text-sm xl:text-base">
+               #emailProcessingMadeSimple
+             </span>
+             <h2 class="my-4 text-4xl font-extrabold leading-10 tracking-tight text-gray-300 sm:leading-none sm:text-6xl lg:text-5xl xl:text-6xl">
+               Mail Processing <br class="hidden md:block"/>
+               <span class="text-yellow-300 md:whitespace-pre">      Passport Group</span>
+             </h2>
+            <h1 class="title-font font-medium text-2xl mt-2 text-gray-200">Process large amounts of emails while keeping track of client files</h1>
+            <p class="leading-relaxed mt-8">
+              Our tool permits you to process any pdf and tool, making sure you keep track of files from drive simultaneously all together with the blue docs.
+            </p>
+          </div>
+          <div class="w-full md:w-2/5 bg-gray-50 bg-opacity-5 text-white rounded-lg p-10 flex flex-col md:ml-auto w-full mt-10 md:mt-0">
+            <h2 class="text-xl font-medium title-font mb-6">Sign In</h2>
+            <p class="leading-relaxed ">Access your account and get started with processing documents and drive</p>
+            <form @submit.prevent="submit">
+               <div class="relative mt-5">
+                 <label for="account" class="text-base font-semibold leading-7">Email <span class="text-red-700 text-lg">*</span></label>
+                 <input type="text" required id="account" v-model="loginForm.account" name="account" placeholder="Account unique identifier" class="w-full px-4 py-2 mt-2 text-base bg-gray-700 text-white transition duration-500 ease-in-out transform border border-gray-700 rounded-lg focus:border-yellow-600 focus:bg-gray-700 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2">
+                 <div class="form-error" v-if="loginForm.errors.account">{{ loginForm.errors.account }}</div>
+               </div>
+              <div class="relative mt-4">
+                <label for="password" class="text-base font-semibold leading-7">Password <span class="text-red-700 text-lg">*</span></label>
+                <div class="relative">
+                  <input :type="togglePassword ? 'password' : 'text'" required id="password" v-model="loginForm.password" name="password" placeholder="Account password" class="w-full bg-gray-700 text-white px-4 py-2 mt-2 text-base transition duration-500 ease-in-out transform border border-gray-700 rounded-lg focus:border-yellow-600 focus:bg-gray-700 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2">
+                  <div class="absolute right-1 bottom-2.5 px-2 cursor-pointer"
+                       @click="() => togglePassword = !togglePassword">
+                    <icon :name="togglePassword ? 'eye' : 'eye-off'" class="w-5 h-5" />
+                  </div>
+                </div>
+                <div class="form-error" v-if="loginForm.errors.password">{{ loginForm.errors.password }}</div>
+              </div>
+                <passport-button
+                    :type="'submit'"
+                    :loading="loginForm.processing"
+                    class="w-full mt-10 text-white bg-green-800 border-0 py-2 px-4 focus:outline-none hover:bg-yellow-600 rounded text-lg">
+                  Access Portal
+                </passport-button>
+            </form>
+            <p class="text-xs text-gray-500 mt-3">Are you a passport group personnel, login in to start hiking</p>
+          </div>
+        </div>
+      </section>
+    </div>
 </template>
 
 <script>
-import MainLayout from '@/layouts/MainLayout';
-import EmptyList from "../components/EmptyList";
-import PassportLoader from "../components/PassportLoader";
-import ListingList from "../components/ListingList";
-import {mapGetters} from "vuex";
+import PassportButton from "../global-components/PassportButton"
+import MainLayout from "../layouts/MainLayout"
 
 export default {
     name: 'Index',
+    layout: MainLayout,
     metaInfo() {
         return {title: this.$t('general.home')}
     },
     props: {
-        listings: Array,
-        main_categories: Array,
-        flash: Object,
+      listings: Array,
+      flash: Object,
+      errors: Object,
     },
-    computed: {
-        ...mapGetters([
-            'infiniteId',
-            'results',
-            'is_complete',
-        ])
-    },
-    components: {
-      PassportLoader,
-        EmptyList,
-        ListingList,
-        MainLayout,
-    },
+  components: {
+      PassportButton
+  },
     data() {
         return {
+          togglePassword: true,
+            loginForm: this.$inertia.form({
+              account: null,
+              password: null,
+              remember: null,
+              next: null
+            })
         }
     },
     methods: {
-        getInitialData($state) {
-            this.$store.dispatch('GET_DATA', $state)
-        },
+      submit() {
+            this.loginForm.post(this.route('login'))
+        }
     },
-    mounted() {
-        this.$store.dispatch('INIT_DATA', {url: '/'})
-        document.addEventListener('scroll', () => {
-            this.$redrawVueMasonry('listings')
-        })
-    }
 }
 </script>
 
