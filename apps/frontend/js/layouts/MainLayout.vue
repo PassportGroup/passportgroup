@@ -38,24 +38,42 @@ export default {
                 cash("html").addClass("dark")
         },
     },
+    created() {
+      let updateOnlineStatus = this.updateOnlineStatus
+      window.addEventListener('load', function() {
+        window.addEventListener('online',  updateOnlineStatus)
+        window.addEventListener('offline',  updateOnlineStatus)
+      })
+    },
     data() {
         return {
             notification_audio: new Audio('/static/audio/notification_bell.mp3'),
         }
     },
     methods: {
-        subscribeToNotifications () {
-           let channel = this.$pusher.subscribe('PassportGroup.web.notifications.' + this.$page.props.auth.username)
-            channel.bind('notification', data => {
-                this.$store.commit('setNotifications', data)
-            })
-        },
-       setMarginProperties(value) {
-            if (value) {
-                cash('#main-body-content').removeClass('mb-28').addClass('mb-52')
-            }
+      updateOnlineStatus() {
+        let condition = navigator.onLine ? "online" : "offline";
+        if (condition === "offline") {
+          this.$notify({
+            group: 'internet',
+            title: `Oops something went wrong`,
+            text: 'You seem to be offline',
+            type: 'warning',
+          })
         }
-    },
+      },
+      subscribeToNotifications () {
+        let channel = this.$pusher.subscribe('PassportGroup.web.notifications.' + this.$page.props.auth.username)
+        channel.bind('notification', data => {
+          this.$store.commit('setNotifications', data)
+        })
+      },
+      setMarginProperties(value) {
+        if (value) {
+          cash('#main-body-content').removeClass('mb-28').addClass('mb-52')
+        }
+      }
+      },
     mounted() {
        if (this.$page.props.auth) {
             this.$store.dispatch('getRecentNotifications')

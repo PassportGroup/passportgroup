@@ -4,6 +4,7 @@
         <notifications group="auth" position="top right"/>
         <notifications group="app" position="bottom right"/>
         <notifications group="error" position="top right"/>
+        <notifications group="internet" position="top center"/>
     </div>
 </template>
 <script>
