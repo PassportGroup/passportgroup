@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="{% mix 'build/app.css' 'static' %}"/>
     {% js_routes %}
 </head>
-<body class="m-0 p-0 overflow-scroll-container border-t-2 border-green-400 font-lato bg-gray-900 dark:bg-dark-1">
+<body class="m-0 p-0 overflow-scroll-container border-t-2 border-green-400 font-lato dark:bg-gray-900">
 {% csrf_token %}
 <div id="app" data-page="{{ page|inertia_load }}"></div>
 <script type="text/javascript">

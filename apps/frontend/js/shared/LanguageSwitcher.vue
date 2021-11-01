@@ -12,7 +12,7 @@
             @keydown.down.exact.prevent="startArrowKeys"
         >
             <img :src="`/static/flags/${$i18n.locale}.svg`" alt="flag" class="fill-current h-4 w-4 ltr:mr-1 rtl:ml-1">
-            <span class="ml-1 text-sm font-bold text-white whitespace-no-wrap">{{ $i18n.locale.toUpperCase() }}</span>
+            <span class="ml-1 text-sm font-bold whitespace-no-wrap">{{ $i18n.locale.toUpperCase() }}</span>
             <icon name="cheveron-down" class="mx-1.5"/>
         </button>
         <transition name="dropdown-fade">

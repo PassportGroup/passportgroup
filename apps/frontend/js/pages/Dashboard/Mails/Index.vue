@@ -1,23 +1,22 @@
 <template>
-  <div class="container p-5 my-2 text-white">
+  <div class="container p-5 my-2">
      <form @submit.prevent="filterEmails()" class="flex items-center text-center justify-center mt-10 flex-nowrap w-full">
-       <input v-model="query" type="text" placeholder="Search Emails" class="text-white w-72 bg-gray-700 py-2 px-4 ltr:border-r rtl:border-l border-gray-500 outline-none focus:outline-none">
-       <div class="bg-gray-700 px-4">
+       <div class="bg-gray-100 border border-gray-500 rounded shadow:md px-4 w-3/5">
          <date-range-picker
-             class="max-w-md"
-            ref="mailPicker"
-            :showWeekNumbers="true"
-            v-model="mailRange">
+             class="w-full"
+             ref="mailPicker"
+             :showWeekNumbers="true"
+             v-model="mailRange">
            <!--    header slot-->
             <div slot="header" slot-scope="header" class="slot">
               <h3>Select Date range</h3> <span v-if="header.in_selection"> - in selection</span>
             </div>
             <!--    input slot (new slot syntax)-->
-            <template slot="input" slot-scope="picker" class="w-full w-72 flex text-gray-200 bg-gray-700 rounded-r">
-              <span class="text-gray-200 text-italic" v-if="picker.startDate === null && picker.endDate === null">
+            <template slot="input" slot-scope="picker" class="w-full w-96 flex flex-wrap">
+              <span class="text-gray-800 italic" v-if="picker.startDate === null && picker.endDate === null">
                 Select date range
               </span>
-              <span v-else>
+              <span v-else class="text-gray-800">
                 {{ picker.startDate | date }} - {{ picker.endDate | date }}
               </span>
             </template>
@@ -81,9 +80,11 @@
     </div>
     <div v-if="showProcessingButton" class="fixed bottom-16 right-8">
       <button
+          v-tippy="{ arrow : true,  animation : 'perspective'}"
+          content='Process Mails'
           @click="processMails"
           :disabled="processingMails"
-          class="p-0 w-16 h-16 bg-yellow-700 rounded-full hover:bg-yellow-800 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none">
+          class="p-0 w-16 h-16 bg-yellow-700 text-white rounded-full hover:bg-yellow-800 active:shadow-lg mouse shadow transition ease-in duration-200 focus:outline-none">
             <icon v-if="!processingMails" name="send" class="w-8 h-8 inline-block text-center"/>
             <passport-loader v-else :loading="processingMails"/>
       </button>

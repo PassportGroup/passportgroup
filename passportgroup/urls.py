@@ -27,7 +27,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    path('/access91/secure.portal/admin/', admin.site.urls),
+    # path('/access91/secure.portal/admin/', admin.site.urls),
     path('', include('apps.core.urls')),
 )
 

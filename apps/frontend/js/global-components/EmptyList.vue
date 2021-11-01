@@ -1,5 +1,5 @@
 <template>
-     <div class="flex items-center justify-center text-center text-white">
+     <div class="flex items-center justify-center text-center">
         <div class="pt-10 pb-10 sm:pt-24 sm:pb-36 lg:pt-40 lg:pb-56 text-center" style="">
             <svg width="96" height="96" fill="none" class="mx-auto mb-6">
                 <path d="M36 28.024A18.05 18.05 0 0025.022 39M59.999 28.024A18.05 18.05 0 0170.975 39" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>

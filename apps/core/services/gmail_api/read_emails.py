@@ -28,9 +28,10 @@ def read_message(service, message_id):
         - Reads the content of the email, mostly the snippet, headers and returns them as a dictionary
     """
     message = service.users().messages().get(userId='me', id=message_id['id'], format='full').execute()
+    print(message)
     snippet = message["snippet"]
     is_approved = False
-    if snippet and "security" in snippet or "access" in snippet:
+    if snippet and "approved" in snippet:
         is_approved = True
     return process_message(message, is_approved)
 

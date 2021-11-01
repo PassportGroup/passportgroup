@@ -3,7 +3,7 @@ import pickle
 # Gmail API utils
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
+import google.auth.transport.requests
 from django.conf import settings
 
 # Request all access (permission to read/send/receive emails, manage the inbox, and more)
@@ -25,7 +25,9 @@ def gmail_authenticate():
     # if there are no (valid) credentials available, let the user log in.
     if not credentials or not credentials.valid:
         if credentials and credentials.expired and credentials.refresh_token:
-            credentials.refresh(Request())
+            request = google.auth.transport.requests.Request()
+            print("ok")
+            credentials.refresh(request)
         else:
             flow = InstalledAppFlow.from_client_secrets_file('./gmail_credentials.json', SCOPES)
             credentials = flow.run_local_server(port=0)
@@ -36,7 +38,8 @@ def gmail_authenticate():
 
 
 def search_messages(service, query):
-    query = settings.PASSPORT_FROM_EMAIL + " " + query
+    query = "from: " + settings.PASSPORT_FROM_EMAIL + " " + query
+    print(query)
     result = service.users().messages().list(userId='me', q=query).execute()
     messages = []
     if 'messages' in result:
@@ -47,3 +50,8 @@ def search_messages(service, query):
         if 'messages' in result:
             messages.extend(result['messages'])
     return messages
+
+
+def get_mail(service, thread_id):
+    mail = service.users().messages().get(userId='me', id=thread_id, format='full').execute()
+    return mail

@@ -13,7 +13,7 @@ class AccountManager(BaseUserManager):
         if not username:
             raise ValueError("User must have a username.")
 
-        user = self.model(phone=phone, username = username, full_name=full_name, email=email, locale=locale)
+        user = self.model(phone=phone, username=username, full_name=full_name, email=email, locale=locale)
         if provider and provider in ['google', 'facebook']:
             user.set_unusable_password()
             user.verified_email_at = now()

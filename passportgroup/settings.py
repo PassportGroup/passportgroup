@@ -19,7 +19,6 @@ SECRET_KEY = os.getenv('SECRET_KEY', get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG') == 'True'
 
-
 # Mail configurations
 if os.getenv('APP_ENV') == 'production':
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -69,10 +68,10 @@ INSTALLED_APPS = [
     'channels',
     'rest_framework',
     'inertia',
-    'js_routes',
     'djangomix',
     'debug_toolbar',
     'meta',
+    'js_routes',
 ]
 
 MIDDLEWARE = [
@@ -212,27 +211,10 @@ JS_ROUTES_INCLUSION_LIST = [
     'login',
     'logout',
     'mails.index',
-    'mails.detail'
-    'user.profile',
-    'search',
-    'pusher.authentication',
-    'password.forgot',
-    'password.change',
-    'password.set',
-    'notifications',
-    'notifications.unread',
-    'notifications.toggle.read.status',
-    'notifications.delete',
-    'notification.mark.as.read',
-    'user.rate',
-    'settings',
-    'notifications.settings',
-    'delete.account',
-    'account.security',
+    'mails.detail',
     'locale.set',
-    'delete.image',
     'privacy.policy',
-    'terms.of.service'
+    'terms.of.service',
 ]
 
 
@@ -261,11 +243,11 @@ CELERY_TIMEZONE = 'Africa/Douala'
 
 APP_DESCRIPTION = _("Process emails passportgroup")
 APP_KEYWORDS = _("gmail, drive, pdf, python, passportgroup")
-USER_ID_COOKIE_NAME = 'bu_uuid'
+USER_ID_COOKIE_NAME = 'pg_uuid'
 
 DEFAULT_PROFILE_IMG_PATH = 'default_profile.png'
 
-#META SETTINGS
+# META SETTINGS
 META_SITE_NAME = 'Passport Group'
 META_DEFAULT_KEYWORDS = "gmail, email, drive, processing,, files".split(',')
 META_USE_OG_PROPERTIES = True
