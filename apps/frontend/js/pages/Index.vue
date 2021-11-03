@@ -22,7 +22,7 @@
                <div class="relative mt-5">
                  <label for="email" class="text-base font-semibold leading-7">Email <span class="text-red-700 text-lg">*</span></label>
                  <input type="email" id="email" v-model="form.email" name="email"  placeholder="Account unique identifier" class="w-full px-4 py-2 mt-2 text-base bg-gray-50 transition duration-500 ease-in-out transform border border-gray-300 rounded-lg focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2">
-                 <div class="form-error" v-if="form.errors.email">{{ form.errors.email }}</div>
+                 <div class="form-error" v-if="$page.props.errors && $page.props.errors.email">{{ $page.props.errors.email[0].message }}</div>
                </div>
               <div class="relative mt-4">
                 <label for="password" class="text-base font-semibold leading-7">Password <span class="text-red-700 text-lg">*</span></label>
@@ -33,11 +33,11 @@
                     <icon :name="togglePassword ? 'eye' : 'eye-off'" class="w-5 h-5" />
                   </div>
                 </div>
-                <div class="form-error" v-if="form.errors.password">{{ form.errors.password }}</div>
+                <div class="form-error" v-if="$page.props.errors && $page.props.errors.password">{{ $page.props.errors.password[0].message }}</div>
               </div>
                 <passport-button
                     :type="'submit'"
-                    :loading="form.processing"
+                    :loading="sending"
                     class="w-full mt-10 text-white bg-gray-800 border-0 py-2 px-4 focus:outline-none hover:bg-green-600 rounded text-lg">
                   Access Portal
                 </passport-button>
@@ -70,18 +70,27 @@ export default {
     data() {
         return {
           togglePassword: true,
-          form: this.$inertia.form({
+          sending: false,
+          form: {
             email: null,
             password: null,
             remember: null,
             next: null
-          })
+          }
         }
     },
     methods: {
       submit() {
-            this.form.post(this.route('login'))
-        }
+        this.$inertia.post(this.route('login'), this.form, {
+          forceFormData: true,
+           onStart: () => {
+              this.sending = true
+            },
+            onFinish: () => {
+              this.sending = false
+            }
+        })
+      }
     },
 }
 </script>

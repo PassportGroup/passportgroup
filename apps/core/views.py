@@ -22,26 +22,16 @@ from apps.core.services.gmail_api.read_emails import read_message
 from datetime import datetime, timedelta
 
 # Create your views here.
-
-
 def index_view(request):
-    return render_inertia(request, 'Index',
-        props={
-            'listings': [],
-        }
-    )
-
+    return render_inertia(request, 'Index')
 
 def login_view(request):
-
     if request.user.is_authenticated:
         return redirect(reverse('home'))
-
+    
     if request.method == 'POST':
         form = LoginForm(request.POST)
-        print(request.body)
-        print(request.POST.get('email'))
-
+        
         if form.is_valid():
             email = request.POST.get('email').replace(' ', '')
             password = request.POST.get('password')
@@ -49,12 +39,12 @@ def login_view(request):
             _next = request.POST.get('next')
             if user is not None and user.is_active:
                 login(request, user)
-                return redirect(_next if _next != '' else '/')
+                return redirect(_next if _next != '' else '/mails')
             else:
                 share_flash(request, error=_("These credentials do not match our records."))
         else:
-            print(form.errors.as_json())
             share_flash(request, errors=json.loads(form.errors.as_json()))
+
 
     return render_inertia(request, 'Index')
 
@@ -64,6 +54,7 @@ def logout_view(request):
     return redirect(reverse('home'))
 
 
+@login_required
 def mail_listing_view(request):
     query = request.GET.get('query', None)
     start_date_query = request.GET.get('start_date', None) or datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')

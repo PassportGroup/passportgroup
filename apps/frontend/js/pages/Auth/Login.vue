@@ -50,8 +50,8 @@ export default {
     },
     methods: {
         submit(){
-            this.$inertia.post(this.route('login'), this.form, {
-                forceFormData: true,
+
+            this.form.post(this.route('login'), this.form , {
                 onStart: () => {
                     this.sending = true
                 },

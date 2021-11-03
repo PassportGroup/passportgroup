@@ -3,7 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('', index_view, name='home'),
-    path('login/', login_view, name="login"),
+    path('login/', login_view, name='login'),
     path('logout/', logout_view, name="logout"),
 
     # =========== Mails Listing ===========

@@ -4,9 +4,10 @@ from .models import Account
 
 
 class AccountAdmin(UserAdmin):
-    list_display = ('phone', 'username', 'email', 'full_name', 'date_joined', 'last_login', 'is_admin', 'is_staff', 'signup_provider')
-    search_fields = ('phone', 'username', 'email')
-    readonly_fields = ('id', 'date_joined', 'last_login')
+    list_display = ('email', 'last_login', 'is_admin', 'is_staff')
+    search_fields = ('email',)
+    readonly_fields = ('id', 'last_login')
+    ordering = ('-email',)
 
     filter_horizontal = ()
     list_filter = ()

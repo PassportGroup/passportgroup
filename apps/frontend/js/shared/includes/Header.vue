@@ -27,7 +27,7 @@
                             <inertia-link
                                 v-if="!$page.props.auth"
                                 class="ltr:mr-2 rtl:ml-2 py-2 px-4 rounded bg-gray-900 hover:bg-yellow-700 text-center text-white"
-                                :href="route('mails.index')">
+                                :href="route('login')">
                               Login
                             </inertia-link>
                         </li>
@@ -68,11 +68,11 @@
                                 <div class="inline-block rounded-full ring-2 ring-white relative w-10 h-10">
                                     <dropdown placement="bottom-end">
                                         <button v-tippy="{ arrow : true,  animation : 'perspective'}"
-                                                :content="$page.props.auth.full_name"
+                                                :content="$page.props.auth.username"
                                                 class="border-none outline-none focus:outline-none focus:border-transparent">
-                                            <img :src="$page.props.auth.img" alt="avatar"
+                                            <img :src="$page.props.auth.profile_image" alt="avatar"
                                                  class="w-10 h-10 rounded-full items-center align-center content-center">
-                                            <span v-if="$page.props.auth.is_verified === 1"
+                                            <span v-if="$page.props.auth.verify_email === true"
                                                  class="absolute -bottom-2 right-0 h-5 w-5 my-1 border-2 border-white rounded-full bg-theme-1 z-2">
                                                 <svg class="rounded-full text-white" fill="none" stroke="currentColor"
                                                      viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -83,81 +83,6 @@
                                                 </svg>
                                             </span>
                                         </button>
-                                        <div slot="dropdown"
-                                             class="mt-1 py-2 shadow-xl rounded bg-white dark:bg-dark-2 text-sm relative z-50">
-                                            <div class="absolute -top-2 right-1 arrow-up"></div>
-                                            <div class="border-b">
-                                                <div class="flex items-center mx-4 mb-4">
-                                                    <img :src="$page.props.auth.img" alt="avatar"
-                                                         class="w-10 rounded-full border-2 border-gray-300"/>
-                                                    <div class="leading-5 ml-2">
-                                                        <h4 class="text-sm font-semibold">{{
-                                                                $page.props.auth.full_name
-                                                            }}</h4>
-                                                        <h5 class="text-xs font-semibold">{{
-                                                                $page.props.auth.email
-                                                            }}</h5>
-                                                        <h5 v-if="$page.props.auth.is_active === 0 "
-                                                            class="font-semibold items-center justify-center flex mt-1 rounded bg-opacity-2 py-1 text-red-800 bg-red-100 px-2">
-                                                            <span class="text-xs"> {{ $t('general.email-not-verified') }}</span>
-                                                        </h5>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="border-b">
-                                                <inertia-link
-                                                    :href="route('user.profile', $page.props.auth.username)"
-                                                    class="px-4 py-2 hover:bg-gray-100  dark:hover:bg-dark-3 flex">
-                                                    <svg class="w-5 h-5" fill="none" stroke="currentColor"
-                                                         strokeLinecap="round" strokeLinejoin="round" strokeWidth="1"
-                                                         viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                    </svg>
-                                                    <div class="pl-3">
-                                                        <p class="text-sm font-medium leading-none">{{ $t('general.my-profile') }}</p>
-                                                        <p class="text-xs text-gray-500">{{ $t('general.my-profile-note') }}</p>
-                                                    </div>
-                                                </inertia-link>
-                                            </div>
-                                            <div v-if="hasRole('admin')"
-                                                 class="flex items-center justify-center my-2 mx-4">
-                                                <inertia-link v-tippy="{arrow : true,  animation : 'perspective'}"
-                                                              :href="route('upload.index')"
-                                                              class="mx-4 mt-auto text-white text-xs transition duration-500 ease-in-out transform border-0 rounded bg-theme-1 hover:bg-gray-900 focus:outline-none focus:shadow-outline focus:ring-2 ring-offset-current ring-offset-2"
-                                                              content="Upload">
-                                                    <div class="flex items-center uppercase w-full px-6 py-2">
-                                                        <svg class="w-4 h-4 ml-2 mr-2" fill="none" stroke="currentColor"
-                                                             viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                            <path
-                                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                stroke-width="2"></path>
-                                                        </svg>
-                                                        Process Nationality
-                                                    </div>
-                                                </inertia-link>
-                                            </div>
-                                            <inertia-link :href="route('index')" as="button"
-                                                          class="px-4 py-2 hover:bg-gray-100 dark:hover:bg-dark-3 flex w-full focus:outline-none outline-none"
-                                                          method="post">
-                                                <div class="text-red-700">
-                                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24">
-                                                        <path
-                                                            d="M13 4.00894C13.0002 3.45665 12.5527 3.00876 12.0004 3.00854C11.4481 3.00833 11.0002 3.45587 11 4.00815L10.9968 12.0116C10.9966 12.5639 11.4442 13.0118 11.9965 13.012C12.5487 13.0122 12.9966 12.5647 12.9968 12.0124L13 4.00894Z"
-                                                            fill="currentColor"/>
-                                                        <path
-                                                            d="M4 12.9917C4 10.7826 4.89541 8.7826 6.34308 7.33488L7.7573 8.7491C6.67155 9.83488 6 11.3349 6 12.9917C6 16.3054 8.68629 18.9917 12 18.9917C15.3137 18.9917 18 16.3054 18 12.9917C18 11.3348 17.3284 9.83482 16.2426 8.74903L17.6568 7.33481C19.1046 8.78253 20 10.7825 20 12.9917C20 17.41 16.4183 20.9917 12 20.9917C7.58172 20.9917 4 17.41 4 12.9917Z"
-                                                            fill="currentColor"/>
-                                                    </svg>
-                                                </div>
-                                                <div class="pl-3">
-                                                    <p class="text-sm font-medium leading-none">
-                                                        {{ $t('general.logout') }}
-                                                    </p>
-                                                </div>
-                                            </inertia-link>
-                                        </div>
                                     </dropdown>
                                 </div>
                             </div>

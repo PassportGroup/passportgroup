@@ -4,7 +4,6 @@ import axios from "axios"
 import PortalVue from 'portal-vue'
 import { createInertiaApp, Link } from '@inertiajs/inertia-vue'
 import { InertiaProgress } from "@inertiajs/progress"
-import VueTelInput from 'vue-tel-input'
 import Vuelidate from 'vuelidate'
 import VuePusher from 'vue-pusher'
 import VueSweetalert2 from 'vue-sweetalert2'
@@ -23,7 +22,6 @@ Vue.use(VueSweetalert2)
 Vue.use(VueMeta)
 Vue.use(Notifications)
 Vue.use(PortalVue)
-Vue.use(VueTelInput)
 Vue.use(Vuelidate)
 Vue.use(VueMeta)
 Vue.mixin(RolesPermissions)
