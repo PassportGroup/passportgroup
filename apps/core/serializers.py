@@ -17,11 +17,23 @@ class UserSchema(Schema):
     is_active = fields.Boolean()
     profile_image = fields.Method('get_profile_image')
     signup_provider = fields.Str()
+    unread_messages = fields.Method('count_unread_messages')
     verify_email = fields.Function(lambda obj: True if obj.verified_email_at else False)
     is_admin = fields.Function(lambda obj: obj.is_admin or obj.is_superuser)
+    roles = fields.Method('get_user_roles')
+    permissions = fields.Method('get_user_roles')
 
     def get_profile_image(self, obj):
         return settings.MEDIA_URL + str(obj.profile_image)
+
+    def get_user_roles(self, obj):
+        return ['super_admin', 'admin']
+
+    def get_user_permissions(self, obj):
+        return ['process_emails']
+
+    def count_unread_messages(self, obj):
+        return 1200
 
 
 class ProfileSchema(Schema):

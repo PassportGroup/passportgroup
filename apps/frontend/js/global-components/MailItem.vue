@@ -7,14 +7,14 @@
           class="px-2 py-1 text-xs absolute right-0 top-0 border-l capitalize text-white rounded-tr font-bold"
       >{{ mail.is_approved ? 'approved' : 'not approved' }}</div>
       <h3 class="text-lg font-bold my-2">
-        <inertia-link :href="route('mails.detail', mail.thread_id)" :class="selected ? 'text-orange-700' : 'text-green-700'" class="underline">{{ mail.subject}}</inertia-link>
+        <inertia-link :href="route('dashboard.mails.detail', mail.thread_id)" :class="selected ? 'text-orange-700' : 'text-green-700'" class="underline">{{ mail.subject}}</inertia-link>
         <span class="text-gray-500 mx-2 italic text-xs">- 12 Sep 2021</span><br>
         <span class="mx-2 italic text-xs px-4 py-1 text-white bg-gray-400 rounded">#{{ mail.thread_id }}</span>
       </h3>
       <div class="my-4" v-html="mail.snippet"/>
       <div class="absolute right-0 bottom-1 px-4 py-2 mx-2 mt-12">
         <div class="flex flex-row items-center ltr:justify-end rtl:justify-start text-center">
-           <inertia-link :href="route('mails.detail', mail.thread_id)" v-tippy="{ arrow : true,  animation : 'perspective'}"
+           <inertia-link :href="route('dashboard.mails.detail', mail.thread_id)" v-tippy="{ arrow : true,  animation : 'perspective'}"
                content='View Mail' class="w-6 h-6 p-1 rounded-full mr-2 transform text-gray-800 bg-gray-300 hover:bg-gray-400 hover:scale-110">
             <icon name="eye" class="cursor-pointer" />
           </inertia-link>

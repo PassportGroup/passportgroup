@@ -1,6 +1,7 @@
 import Vue from "vue"
 
 Vue.component("PassportPhoneInput", () => import("./PassportPhoneInput"))
+Vue.component("BreadCrumb", () => import("./BreadCrumb"))
 Vue.component("Header", () => import("./../shared/includes/Header"))
 Vue.component("Footer", () => import("./../shared/includes/Footer"))
 Vue.component('Alert', () => import('./Alert'))

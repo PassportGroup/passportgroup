@@ -13,7 +13,9 @@ def current_user(request):
     if is_anonymous:
         return None
 
-    user_schema = UserSchema(only=("username", "email", "profile_image", "date_joined", "is_admin"))
+    user_schema = UserSchema(only=("username", "email", "profile_image", "date_joined", "is_admin", "roles",
+                                   "permissions", "unread_messages"))
+    print(user_schema)
     return user_schema.dump(get_user(request))
 
 

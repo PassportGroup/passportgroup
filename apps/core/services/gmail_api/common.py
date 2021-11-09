@@ -26,7 +26,6 @@ def gmail_authenticate():
     if not credentials or not credentials.valid:
         if credentials and credentials.expired and credentials.refresh_token:
             request = google.auth.transport.requests.Request()
-            print("ok")
             credentials.refresh(request)
         else:
             flow = InstalledAppFlow.from_client_secrets_file('./gmail_credentials.json', SCOPES)

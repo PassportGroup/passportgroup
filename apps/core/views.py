@@ -21,9 +21,11 @@ from apps.core.services.gmail_api.common import gmail_authenticate, search_messa
 from apps.core.services.gmail_api.read_emails import read_message
 from datetime import datetime, timedelta
 
+
 # Create your views here.
 def index_view(request):
     return render_inertia(request, 'Index')
+
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -39,12 +41,11 @@ def login_view(request):
             _next = request.POST.get('next')
             if user is not None and user.is_active:
                 login(request, user)
-                return redirect(_next if _next != '' else '/mails')
+                return redirect(_next if _next != '' else '/dashboard')
             else:
                 share_flash(request, error=_("These credentials do not match our records."))
         else:
             share_flash(request, errors=json.loads(form.errors.as_json()))
-
 
     return render_inertia(request, 'Index')
 
@@ -52,159 +53,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect(reverse('home'))
-
-
-@login_required
-def mail_listing_view(request):
-    query = request.GET.get('query', None)
-    start_date_query = request.GET.get('start_date', None) or datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-    end_date_query = request.GET.get('end_date', None)
-    page = request.GET.get('page', 1)
-
-    begin_date = datetime.strptime(start_date_query, '%Y-%m-%dT%H:%M:%S.%fZ')
-    end_date = begin_date + timedelta(14)
-    if end_date_query:
-        end_date = datetime.strptime(end_date_query, '%Y-%m-%dT%H:%M:%S.%fZ')
-
-    final_mails = []
-    try:
-        gmail_service = gmail_authenticate()
-        # Build query from this
-        query = "after:" + begin_date.strftime('%Y/%m/%d') + " before:" + end_date.strftime('%Y/%m/%d')
-        mails = search_messages(gmail_service, query)
-        for mail in mails:
-            data = read_message(gmail_service, mail)
-            if data:
-                # process data on drive
-                print(data)
-                final_mails.append(data)
-    except Exception as e:
-        share_flash(request, error=_("Error processing mails at this time: ") + str(e))
-
-    # paginate data
-    mails_obj, links = paginate(
-        objects=final_mails,
-        current_url=request.build_absolute_uri(),
-        items_per_page=50,
-        current_page=page
-    )
-    return render_inertia(
-        request,
-        'Dashboard/Mails/Index',
-        props={
-            'mails': final_mails,
-            'query': query,
-            'start_date': start_date_query,
-            'end_date': end_date_query,
-            'links': links
-        }
-    )
-
-
-def mail_details_view(request, thread_id):
-    mail = None
-    try:
-        gmail_service = gmail_authenticate()
-        mail = get_mail(gmail_service, thread_id)
-    except Exception as e:
-        share_flash(request, error=_("Error processing mails at this time: ") + str(e))
-
-    return render_inertia(
-        request,
-        'Dashboard/Mails/Details',
-        props={
-            'mail': mail,
-        }
-    )
-
-
-
-# def verify_phone_view(request):
-#     context = {}
-#
-#     if request.method == 'POST':
-#         data = json.loads(request.body)
-#         form = VerifyPhoneForm(data)
-#
-#         if form.is_valid():
-#             code = int(data.get('code'))
-#             phone = data.get('phone').replace(' ','')
-#             user = get_object_or_404(User, phone = phone)
-#             otp = get_object_or_404(OTP, user = user)
-#             otp_type = request.session.get('otp_type')
-#
-#             redirect_next = data.get('redirect_next', str(reverse('login')))
-#
-#             try:
-#                 assert timezone.now() < otp.created_at + timedelta(minutes = 5), 'code-expired'
-#                 assert int(otp.code) == code, 'invalid-code'
-#
-#                 del request.session['otp_type']
-#                 del request.session['phone_number']
-#
-#                 if otp_type == 'verify-phone':
-#                     user.verified_phone_at = timezone.now()
-#                     user.save()
-#                     otp.delete()
-#
-#                     return JsonResponse(
-#                         {
-#                             'message': _('Phone number verified successfully'),
-#                             'redirect_next': redirect_next
-#                         }
-#                     )
-#
-#                 if otp_type == 'reset-password':
-#                     token = default_token_generator.make_token(user)
-#                     uid = urlsafe_base64_encode(force_bytes(user.pk))
-#
-#                     return JsonResponse(
-#                         {
-#                             'message': '',
-#                             'redirect_next': str(reverse('password.reset', kwargs = {'uidb64': uid, 'token': token}))
-#                         }
-#                     )
-#
-#             except AssertionError as e:
-#                 if e.args:
-#                     if str(e.args[0]) == 'invalid-code':
-#                         context = {'message': _('Invalid Code')}
-#                     else:
-#                         otp.delete()
-#                         context = {'message': _('Your otp code has expired')}
-#         else:
-#             context = {'message': _('invalid form data')}
-#
-#     response = JsonResponse(context)
-#     response.status_code = 400
-#     return response
-
-#
-# def verify_email_view(request, *args, **kwargs):
-#     assert 'uidb64' in kwargs and 'token' in kwargs
-#     token = kwargs['token']
-#
-#     try:
-#         # urlsafe_base64_decode() decodes to bytestring
-#         uid = urlsafe_base64_decode(kwargs['uidb64']).decode()
-#         user = User.objects.get(pk=uid)
-#     except (TypeError, ValueError, OverflowError, User.DoesNotExist, ValidationError):
-#         user = None
-#
-#     email_token = get_object_or_404(EmailVerificationToken, email=user.email)
-#
-#     if email_token:
-#         if timezone.now() < (email_token.created_at + timedelta(hours=1)) and email_token.token == token:
-#             user.verified_email_at = timezone.now()
-#             user.save()
-#             share_flash(request, success=_('Email verified successfully'))
-#             email_token.delete()
-#             return redirect(reverse('settings'))
-#         else:
-#             email_token.delete()
-#             share_flash(request, error=_('Your verification link has expired'))
-#
-#     return redirect(reverse('login'))
 
 
 def set_locale_view(request):
@@ -231,20 +79,15 @@ def set_locale_view(request):
                     )
                     return response
 
-    return HttpResponseRedirect(request.META['HTTP_REFERER']) if request.META['HTTP_REFERER'] else reverse(redirect('home'))
+    return HttpResponseRedirect(request.META['HTTP_REFERER']) if request.META['HTTP_REFERER'] \
+        else reverse(redirect('home'))
 
 
 def privacy_policy(request):
 
-    return render_inertia(
-        request,
-        'PrivacyPolicy'
-    )
+    return render_inertia(request, 'PrivacyPolicy')
 
 
 def terms_of_service(request):
 
-    return render_inertia(
-        request,
-        'TermsOfService'
-    )
+    return render_inertia(request, 'TermsOfService')

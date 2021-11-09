@@ -1,5 +1,6 @@
 <template>
-  <div class="container p-5 my-2">
+  <div class="my-2 mx-5">
+    <BreadCrumb :page-routes="pagesRoutes" :active-link="activeLink"/>
      <form @submit.prevent="filterEmails()" class="flex items-center text-center justify-center mt-10 flex-nowrap w-full">
        <div class="bg-gray-100 border border-gray-500 rounded shadow:md px-4 w-3/5">
          <date-range-picker
@@ -52,7 +53,7 @@
        </button>
      </form>
     <div class="flex flex-col items-center justify-center m-auto my-8">
-       <div class="px-0 md:px-4 mt-0 mb-4 w-full md:w-4/5">
+       <div class="px-0 md:px-4 mt-0 mb-4 w-full">
          <div v-if="mails.length > 0">
            <div v-if="!is_filtering">
              <div class="w-full">
@@ -78,7 +79,7 @@
          </div>
        </div>
     </div>
-    <div v-if="showProcessingButton" class="fixed bottom-16 right-8">
+    <div v-if="showProcessingButton" class="fixed bottom-8 right-5 z-999">
       <button
           v-tippy="{ arrow : true,  animation : 'perspective'}"
           content='Process Mails'
@@ -93,16 +94,17 @@
 </template>
 
 <script>
-import MainLayout from "../../../layouts/MainLayout"
+import DashboardLayout from "../../../layouts/DashboardLayout"
 import DateRangePicker from 'vue2-daterange-picker'
 import EmptyList from "../../../global-components/EmptyList"
 import PassportLoader from "../../../global-components/PassportLoader"
 import MailListing from "../../../global-components/MailListing"
 import MailItem from "../../../global-components/MailItem"
+import i18n from "../../../i18n";
 
 export default {
-  name: "MailIndex",
-  layout: MainLayout,
+  name: "DashboardMailIndex",
+  layout: DashboardLayout,
   components: {
     DateRangePicker,
     EmptyList,
@@ -131,6 +133,13 @@ export default {
   },
   data() {
         return {
+          pagesRoutes: [
+                {
+                    title : i18n.t('menu.dashboard'),
+                    link : this.route('dashboard.index')
+                },
+            ],
+          activeLink: 'Mails',
           query: '',
           processingMails: false,
           is_filtering: false,
@@ -162,7 +171,7 @@ export default {
     },
     filterEmails() {
       this.is_filtering = true
-      this.$inertia.get(this.route('mails.index'), {
+      this.$inertia.get(this.route('dashboard.mails.index'), {
         q: this.query,
         start_date: this.mailRange.startDate,
         end_date: this.mailRange.endDate,

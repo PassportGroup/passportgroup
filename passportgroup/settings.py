@@ -210,9 +210,13 @@ JS_ROUTES_INCLUSION_LIST = [
     'home',
     'login',
     'logout',
-    'mails.index',
-    'mails.detail',
     'locale.set',
+
+
+    'dashboard.index',
+    'dashboard.mails.index',
+    'dashboard.mails.detail',
+
     'privacy.policy',
     'terms.of.service',
 ]
