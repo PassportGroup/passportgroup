@@ -7,8 +7,12 @@ import google.auth.transport.requests
 from django.conf import settings
 
 # Request all access (permission to read/send/receive emails, manage the inbox, and more)
-SCOPES = ['https://mail.google.com/']
-
+SCOPES = [
+    'https://mail.google.com/',
+    'https://www.googleapis.com/auth/drive.metadata',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.file'
+]
 
 if settings.PASSPORT_BASE_EMAIL is None or settings.PASSPORT_FROM_EMAIL is None:
     print("Please make sure you set correctly the GMAIL_ID and FROM_GMAIL_ID in the .env file")
@@ -29,7 +33,14 @@ def gmail_authenticate():
             credentials.refresh(request)
         else:
             flow = InstalledAppFlow.from_client_secrets_file('./gmail_credentials.json', SCOPES)
-            credentials = flow.run_local_server(port=0)
+            if os.getenv('APP_ENV') == 'local':
+                credentials = flow.run_local_server(port=0)
+            else:
+                flow.redirect_uri = 'http://5.189.177.4/en/dashboard/mails/'
+                credentials = flow.authorization_url(
+                    access_type='offline',
+                    include_granted_scopes='true'
+                )
         # save the credentials for the next run
         with open("gmail_api_token.pickle", "wb") as token:
             pickle.dump(credentials, token)
