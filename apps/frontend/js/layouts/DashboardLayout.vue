@@ -3,8 +3,6 @@
         <FlashMessages/>
         <div @resize.window="watchScreen()">
             <div class="flex h-screen antialiased text-gray-900 bg-gray-100 dark:bg-dark dark:text-light">
-                <!-- Sidebar first column -->
-                <!-- Backdrop -->
                 <div
                     v-show="isSidebarOpen"
                     @click="isSidebarOpen = false"
@@ -156,11 +154,10 @@
                             </button>
                         </div>
                         <div class="flex flex-col h-screen">
-                            <!-- Panel header -->
                             <div class="flex-shrink-0 px-4">
-                                <!-- Settings button -->
-                                <div class="flex flex-row items-end justify-end">
-                                    <div class="flex flex-row space-x-1 mx-2 mt-2">
+                                <div class="flex flex-row items-end justify-end space-x-2">
+                                  <LanguageSwitcher/>
+                                  <div class="flex flex-row mx-2 mt-2">
 <!--                                        <LanguageSwitcher :locale-link="'waspito_insurance.locale.set'"/>-->
                                         <inertia-link href="#" @click.prevent="logout">
                                             <div
@@ -184,14 +181,10 @@
                                             </div>
                                         </inertia-link>
                                     </div>
-                                    <DarkModeSwitcher/>
                                 </div>
                             </div>
-                            <!-- Panel content -->
                             <div class="flex-1 p-4 space-y-2 overflow-y-hidden hover:overflow-y-auto">
-                                <!-- content -->
                                 <div class="flex flex-col items-center">
-                                    <!-- User avatar -->
                                     <img
                                         class="w-full h-28 p-2 rounded-full dark:opacity-70 object-contain"
                                         :src="'/static/images' + $page.props.auth.profile_image"
@@ -199,25 +192,25 @@
                                     />
                                     <h2 class="text-xl font-bold text-gray-600">PassportGroup</h2>
                                     <h2 class="text-x2 font-bold text-gray-600">{{ $page.props.auth.email }}</h2>
-
-                                    <div class="my-3">
-                                        <inertia-link :href="'#'"
-                                                      class="uppercase inline-flex items-center justify-center font-bold py-2 px-4 mx-2 text-theme-3 hover:text-white border border-theme-3 hover:border-theme-3 waspito-button transition duration-1000 ease-in-out transform outline-none focus:outline-none">
-                                            <icon name="doctor" class="flex mx-2 w-5 h-5 text-theme-3 hover:text-white"/>
-                                            View Profile
-                                        </inertia-link>
+                                    <div class="my-3" v-if="!$page.props.google_access">
+                                      <inertia-link
+                                          :href="route('dashboard.google.auth')"
+                                          class="inline-flex items-center justify-center uppercase font-bold py-3 px-4 bg-yellow-500 text-sm font-medium rounded text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-body focus:ring-green-500">
+                                        <icon name="google-logo" class="h-5 w-5 mx-1.5"/>
+                                       Grant Access
+                                      </inertia-link>
                                     </div>
                                 </div>
                                 <div class="space-y-2 p-2">
-                                    <div class="bg-green-100 mt-5 bg-opacity-40 flex h-72 w-full rounded">
+                                    <div class="bg-green-100 mt-5 bg-opacity-40 flex h-96 w-full rounded">
                                       <div class="overflow-y-scroll overflow-scroll-container py-3 p-2 flex-1">
                                          <h3 class="text-theme-1 font-bold text-sm underline my-2">Recent Activities</h3>
-                                          <a v-for="activity in 3" href="#" class="block">
+                                          <a v-for="activity in 9" href="#" class="block">
                                               <div class="flex px-4 space-x-4">
-                                                  <div class="relative flex-shrink-0">
+                                                  <div class="relative flex-shrink-0 mx-1">
                                                           <inertia-link
                                                               :href="'#'"
-                                                              class="relative z-50 inline-block overflow-visible rounded-ful">
+                                                              class="relative z-50 mx- inline-block overflow-visible rounded-ful">
                                                               <img class="object-contain rounded-full w-9 h-9 border border-theme-3"
                                                                    :src="'/static/images/' + $page.props.auth.profile_image"
                                                                    :alt="'Unknown user'"/>
@@ -238,14 +231,13 @@
                                     <div class="flex items-center justify-end">
                                         <a href="#" class="flex inline-flex items-center text-theme-1 hover:underline">
                                             All activities
-                                            <icon name="arrow-narrow-right" class="ml-1 w-4 h-4"/>
+                                            <icon :name="$i18n.locale === 'he' ? 'arrow-narrow-left' : 'arrow-narrow-right'" class="ml-1 w-4 h-4"/>
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                            <!-- Panel footer -->
                             <footer class="flex items-center justify-between flex-shrink-0 px-4 py-2 border-t dark:border-primary-darker">
-                                <div class="float-right text-sm">Designed by
+                                <div class="float-right text-sm">{{ $t('general.designed_by') }}
                                     <a href="https://twitter.com/muarachmann" target="_blank" class="text-theme-1 hover:underline">
                                         Mua Rachmann
                                     </a>
@@ -254,10 +246,6 @@
                         </div>
                     </section>
                 </div>
-
-                <!-- Panels -->
-                <!-- Search panel -->
-                <!-- Backdrop -->
                 <div
                     class="fixed inset-0 z-10 bg-dark-1 transition duration-300 ease-in-out opacity-0"
                     v-show="isSearchPanelOpen"
@@ -265,9 +253,10 @@
                     style="opacity: 0.5"
                     aria-hidden="true"
                 ></div>
-                <!-- Panel -->
                 <section
-                    :class="!isSearchPanelOpen ? '-translate-x-full' : 'translate-x-0'"
+                    :class="!isSearchPanelOpen ? $i18n.locale === 'he' ?
+                    'translate-x-full' :
+                    '-translate-x-full' : 'translate-x-0'"
                     @keydown.escape="isSearchPanelOpen = false"
                     class="fixed inset-y-0 z-999 w-full duration-500 ease-in-out transform sm:duration-500 max-w-xs bg-white shadow-xl dark:bg-darker dark:text-light sm:max-w-md focus:outline-none"
                 >
@@ -293,7 +282,7 @@
                         <div
                             class="relative flex-shrink-0 px-4 py-8 text-gray-400 border-b dark:border-primary-darker dark:focus-within:text-light focus-within:text-gray-700"
                         >
-              <span class="absolute inset-y-0 inline-flex items-center px-4">
+                            <span class="absolute inset-y-0 inline-flex items-center px-4">
                 <svg
                     class="w-5 h-5"
                     xmlns="http://www.w3.org/2000/svg"
@@ -316,14 +305,9 @@
                                 placeholder="Search..."
                             />
                         </div>
-
-                        <!-- Panel content (Search result) -->
-                        <div class="flex-1 px-4 pb-4 space-y-4 overflow-y-hidden h hover:overflow-y-auto">
+                       <div class="flex-1 px-4 pb-4 space-y-4 overflow-y-hidden h hover:overflow-y-auto">
                             <h3 class="py-2 text-sm font-semibold text-gray-600 dark:text-light">History</h3>
                             <p class="px=4">Search results</p>
-                            <!--  -->
-                            <!-- Search content -->
-                            <!--  -->
                         </div>
                     </div>
                 </section>

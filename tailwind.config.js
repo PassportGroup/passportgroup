@@ -4,8 +4,9 @@ const colors = require('tailwindcss/colors');
 
 module.exports = {
     purge: [
-      './apps/frontend/**/*.js',
-      './apps/frontend/**/*.vue',
+        './apps/frontend/**/*.js',
+        './apps/frontend/**/*.vue',
+        path.resolve(__dirname, './node_modules/vue2-litepie-datepicker/**/*.js')
   ],
     darkMode: 'media',
     theme: {
@@ -56,6 +57,8 @@ module.exports = {
                 'wiggle': 'wiggle 0.4s ease-in-out infinite',
             },
             colors: {
+                'litepie-primary': colors.red,
+                'litepie-secondary': colors.coolGray,
                 yellow: colors.amber,
                 indigo: colors.indigo,
                 teal: colors.teal,

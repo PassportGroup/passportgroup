@@ -4,7 +4,7 @@
         <div class="flex-shrink-0 flex flex-col items-center justify-center">
             <inertia-link
                 v-tippy="{ arrow : true,  animation : 'perspective'}"
-                :content="$t('menu.profile')"
+                :content="$t('menu.account')"
                 :href="'#'"
                 class="block text-xl font-bold tracking-wider uppercase text-primary-dark dark:text-light">
                 <img :alt="$page.props.auth.username" :src="'/static/images' + $page.props.auth.profile_image"
@@ -26,7 +26,7 @@
                 :href="'#'"
                 :class="newNotification ? 'animate-wiggle' : ''"
                 class="relative p-2 transition-colors duration-200 rounded-full text-primary-lighter bg-primary-50 hover:text-primary hover:bg-primary-100 dark:hover:text-light dark:hover:bg-primary-dark dark:bg-dark focus:outline-none focus:bg-primary-100 dark:focus:bg-primary-dark focus:ring-primary-darker">
-                <span class="sr-only">Notifications</span>
+                <span class="sr-only">{{ $t('menu.notifications') }}</span>
                 <icon name="bell" class="w-7 h-7"/>
                 <div class="absolute inset-0 right-2 -top-1.5">
                     <span style="font-size: 9px !important;" class="inline-flex items-center px-1.5 border-1 border-white rounded-full font-semibold bg-red-500 text-white">
@@ -36,18 +36,18 @@
             </inertia-link>
             <inertia-link
                 v-tippy="{ arrow : true,  animation : 'perspective'}"
-                :content="$t('menu.medical_vouchers')"
-                :href="'#'"
+                :content="$t('menu.tasks')"
+                :href="route('dashboard.tasks.index')"
                 class="p-2 transition-colors duration-200 rounded-full text-primary-lighter bg-primary-50 hover:text-primary hover:bg-primary-100 dark:hover:text-light dark:hover:bg-primary-dark dark:bg-dark focus:outline-none focus:bg-primary-100 dark:focus:bg-primary-dark focus:ring-primary-darker">
-                <span class="sr-only">Mails Processor</span>
+                <span class="sr-only">{{ $t('menu.tasks') }}</span>
                 <icon name="document-report" class="w-7 h-7"/>
             </inertia-link>
             <inertia-link
                 v-tippy="{ arrow : true,  animation : 'perspective'}"
-                :content="$t('general.new_voucher')"
-                :href="'#'"
+                :content="$t('menu.dashboard')"
+                :href="route('dashboard.index')"
                 class="p-2 text-white duration-200 rounded-full bg-orange-600 hover:text-white hover:bg-theme-3 focus:outline-none">
-                <span class="sr-only">{{ $t('general.dashboard') }}</span>
+                <span class="sr-only">{{ $t('menu.dashboard') }}</span>
                 <icon name="home" class="w-8 h-8"/>
             </inertia-link>
             <template v-if="hasRole('super_admin|admin')">
@@ -67,15 +67,8 @@
                     <span class="sr-only">Settings</span>
                     <icon name="settings" class="w-7 h-7"/>
                 </inertia-link>
+                <DarkModeSwitcher/>
             </template>
-            <inertia-link
-                v-tippy="{ arrow : true,  animation : 'perspective'}"
-                :content="$t('menu.website')"
-                :href="route('home')"
-                class="p-2 transition-colors duration-200 rounded-full text-primary-lighter bg-primary-50 hover:text-primary hover:bg-primary-100 dark:hover:text-light dark:hover:bg-primary-dark dark:bg-dark focus:outline-none focus:bg-primary-100 dark:focus:bg-primary-dark focus:ring-primary-darker">
-                <span class="sr-only">Website</span>
-                <icon name="website" class="w-7 h-7"/>
-            </inertia-link>
         </div>
         <!-- Sidebar footer -->
         <!-- prevent default just to prevent form submission in this demo -->
@@ -103,9 +96,11 @@
 </template>
 
 <script>
+import DarkModeSwitcher from "../DarkModeSwitcher";
 export default {
     name: "DashboardSideMenu",
-    data() {
+  components: {DarkModeSwitcher},
+  data() {
         return {
             newNotification: false,
         }

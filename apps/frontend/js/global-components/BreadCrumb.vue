@@ -6,7 +6,7 @@
                     {{ pageRoute.title }}
                 </inertia-link>
             </div>
-            <Icon name="arrow-narrow-right" class="flex w-6 h-4 align-middle items-center mt-1 text-theme-1"/>
+            <Icon :name="$i18n.locale === 'he' ? 'arrow-narrow-left' : 'arrow-narrow-right'" class="flex w-6 h-4 align-middle items-center mt-1 text-theme-1"/>
         </template>
         <template v-if="activeLink != null" class="ml-1">
             <div class="rounded px-2 py-1 bg-theme-1 bg-opacity-20">

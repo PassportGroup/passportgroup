@@ -2,7 +2,7 @@
     <div
         id="passportgroup_theme_toggle"
         v-on:click="toggle"
-        class="cursor-pointer flex items-center justify-center rounded-full w-8 h-8 p-1">
+        class="cursor-pointer flex items-center justify-center rounded-full w-10 h-10 p-2">
         <Icon name="light-bulb" class="flex items-center"/>
     </div>
 </template>

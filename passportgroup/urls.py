@@ -32,8 +32,6 @@ urlpatterns += i18n_patterns(
     path('dashboard/', include('apps.dashboard.urls')),
 )
 
-print(urlpatterns)
-
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += path('__debug__/', include(debug_toolbar.urls)),

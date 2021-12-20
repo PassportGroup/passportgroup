@@ -42,6 +42,8 @@ else:
     ALLOWED_HOSTS = ['5.189.177.4']
 
 
+GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'gmail_credentials.json')
+
 PASSPORT_BASE_EMAIL = os.getenv('GMAIL_ID')
 PASSPORT_FROM_EMAIL = os.getenv('FROM_GMAIL_ID')
 
@@ -57,6 +59,7 @@ LOGOUT_REDIRECT_URL = 'home'
 INSTALLED_APPS = [
     # 'apps.core',
     'django.contrib.admin',
+    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -64,6 +67,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
+    'apps.dashboard',
     'apps.account',
     'channels',
     'rest_framework',
@@ -75,6 +79,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'apps.core.middleware.TriggerErrorsResponseAndReturnInertiaResponse',
@@ -89,6 +94,8 @@ MIDDLEWARE = [
     'apps.core.middleware.XForwardedForMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'passportgroup.urls'
 
@@ -211,14 +218,20 @@ JS_ROUTES_INCLUSION_LIST = [
     'login',
     'logout',
     'locale.set',
-
-
-    'dashboard.index',
-    'dashboard.mails.index',
-    'dashboard.mails.detail',
-
     'privacy.policy',
     'terms.of.service',
+
+
+    # dashboard routes
+    'dashboard.index',
+    'dashboard.google.auth',
+    'dashboard.google.callback',
+    'dashboard.mails.index',
+    'dashboard.mails.detail',
+    'dashboard.tasks.index',
+    'dashboard.tasks.detail',
+    'dashboard.tasks.update',
+
 ]
 
 

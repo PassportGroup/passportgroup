@@ -1,36 +1,60 @@
-from django.shortcuts import render
-from django.http import HttpResponse
 from inertia.share import share_flash
 from django.contrib.auth.decorators import login_required
 from inertia.views import render_inertia
 from datetime import datetime, timedelta
-from apps.core.services.gmail_api.common import gmail_authenticate, search_messages, get_mail
+from apps.core.services.gmail_api.common import search_messages, get_mail
 from apps.core.services.gmail_api.read_emails import read_message
 from django.utils.translation import gettext as _
 from apps.utils import *
+from oauth2client.contrib.django_util.storage import DjangoORMStorage
+from django.http import HttpResponseRedirect
+from passportgroup import settings
+from apps.account.models import CredentialsModel
+from googleapiclient.discovery import build
+from django.shortcuts import redirect
+from django.urls import reverse
+import google.auth.transport.requests
+from oauth2client.client import flow_from_clientsecrets
+from apps.core.services.google_api.common import get_credential
+
+
+SCOPES = [
+    'https://mail.google.com/',
+    'https://www.googleapis.com/auth/drive.metadata',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/drive.file'
+]
+
+FLOW = flow_from_clientsecrets(
+        settings.GOOGLE_OAUTH2_CLIENT_SECRETS_JSON,
+        scope=SCOPES,
+        prompt='consent',
+        redirect_uri='http://127.0.0.1:8000/dashboard/oauth/google/callback/',
+)
 
 
 @login_required
 def index(request):
-
     return render_inertia(request, 'Dashboard/Index')
 
 
 @login_required
 def mails_index(request):
     query = request.GET.get('query', None)
-    start_date_query = request.GET.get('start_date', None) or datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    start_date_query = request.GET.get('start_date', None) or datetime.now().strftime('%d %b %Y')
     end_date_query = request.GET.get('end_date', None)
     page = request.GET.get('page', 1)
-
-    begin_date = datetime.strptime(start_date_query, '%Y-%m-%dT%H:%M:%S.%fZ')
+    begin_date = datetime.strptime(start_date_query, '%d %b %Y')
     end_date = begin_date + timedelta(14)
     if end_date_query:
-        end_date = datetime.strptime(end_date_query, '%Y-%m-%dT%H:%M:%S.%fZ')
+        end_date = datetime.strptime(end_date_query, '%d %b %Y')
 
     final_mails = []
     try:
-        gmail_service = gmail_authenticate()
+        credentials = get_credential(request)
+        gmail_service = build('gmail', 'v1', credentials=credentials)
+        print(begin_date)
+        print(end_date)
         # Build query from this
         query = "after:" + begin_date.strftime('%Y/%m/%d') + " before:" + end_date.strftime('%Y/%m/%d')
         mails = search_messages(gmail_service, query)
@@ -41,6 +65,7 @@ def mails_index(request):
                 print(data)
                 final_mails.append(data)
     except Exception as e:
+        print(str(e))
         share_flash(request, error=_("Error processing mails at this time: ") + str(e))
 
     # paginate data
@@ -67,7 +92,9 @@ def mails_index(request):
 def mails_detail(request, thread_id):
     mail = None
     try:
-        gmail_service = gmail_authenticate()
+        storage = DjangoORMStorage(CredentialsModel, 'id', request.user, 'credential')
+        credentials = storage.get()
+        gmail_service = build('gmail', 'v1', credentials=credentials)
         mail = get_mail(gmail_service, thread_id)
     except Exception as e:
         share_flash(request, error=_("Error processing mails at this time: ") + str(e))
@@ -81,3 +108,53 @@ def mails_detail(request, thread_id):
     )
 
 
+@login_required
+def google_auth_callback(request):
+    credential = FLOW.step2_exchange(request.GET)
+    storage = DjangoORMStorage(CredentialsModel, 'id', request.user, 'credential')
+    storage.put(credential)
+    return redirect(reverse('dashboard.index'))
+
+
+@login_required
+def google_authenticate(request, **kwargs):
+    if settings.PASSPORT_BASE_EMAIL is None or settings.PASSPORT_FROM_EMAIL is None:
+        share_flash(
+            request,
+            error=_("Please make sure you set correctly the GMAIL_ID and FROM_GMAIL_ID in the .env file")
+        )
+    else:
+        try:
+            storage = DjangoORMStorage(CredentialsModel, 'id', request.user, 'credential')
+            credentials = storage.get()
+            if not credentials or not credentials.valid:
+                if credentials and credentials.expired and credentials.refresh_token:
+                    request = google.auth.transport.requests.Request()
+                    credentials.refresh(request)
+                else:
+                    authorization_url = FLOW.step1_get_authorize_url()
+                    return HttpResponseRedirect(authorization_url)
+            else:
+                share_flash(request, success=_("Access granted already!"))
+        except Exception as e:
+            share_flash(request, error=_("Error granting google access: ") + str(e))
+
+    return redirect(reverse('dashboard.index'))
+
+
+@login_required
+def get_tasks_index(request):
+    return render_inertia(
+        request,
+        'Dashboard/Tasks/Index',
+        props={}
+    )
+
+
+@login_required
+def get_tasks_details(request, slug):
+    return render_inertia(
+        request,
+        'Dashboard/Tasks/Details',
+        props={}
+    )

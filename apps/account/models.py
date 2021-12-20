@@ -1,10 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-from django.db.models.signals import pre_save, post_save, post_delete
 from django.utils.timezone import now
-from django.dispatch import receiver
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.conf import settings
+from oauth2client.contrib.django_util.models import CredentialsField
 
 
 class AccountManager(BaseUserManager):
@@ -47,6 +45,7 @@ def get_default_profile_image():
 class Account(AbstractBaseUser):
     FACEBOOK = 'facebook'
     GOOGLE = 'google'
+    LINKEDIN = 'linkedin'
     PASSPORTGROUP = 'passportgroup'
     ENGLISH = 'en'
     HEBREW = 'he'
@@ -59,6 +58,7 @@ class Account(AbstractBaseUser):
     SIGNUP_PROVIDERS = (
         (FACEBOOK, 'facebook'),
         (GOOGLE, 'google'),
+        (LINKEDIN, 'linkedin'),
         (PASSPORTGROUP, 'passportgroup'),
     )
 
@@ -66,7 +66,6 @@ class Account(AbstractBaseUser):
     username = models.CharField(verbose_name="username", max_length=30, unique=True)
     last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
     date_joined = models.DateTimeField(verbose_name="date joined", auto_now_add=True)
-    last_login = models.DateTimeField(verbose_name="last login", auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -94,3 +93,10 @@ class EmailVerificationToken(models.Model):
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     token = models.CharField(verbose_name="token", max_length=255)
     created_at = models.DateTimeField(verbose_name="created at", auto_now_add=True)
+
+
+class CredentialsModel(models.Model):
+    id = models.OneToOneField(Account, primary_key=True, on_delete=models.CASCADE)
+    credential = CredentialsField()
+    task = models.CharField(max_length=80, null=True, blank=True)
+    updated_time = models.CharField(max_length=80, null=True)

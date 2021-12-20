@@ -71,25 +71,6 @@ class GenerateUserCookieMiddleware:
         return response
 
 
-class XForwardedForMiddleware:
-    """
-    Set REMOTE_ADDR if it's missing because of a reverse proxy (nginx + gunicorn) deployment.
-    https://stackoverflow.com/questions/34251298/empty-remote-addr-value-in-django-application-when-using-nginx-as-reverse-proxy
-    """
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
-        response = self.get_response(request)
-
-        if 'HTTP_X_FORWARDED_FOR' in request.META:
-            parts = request.META['HTTP_X_FORWARDED_FOR'].split(',', 1)
-            request.META['HTTP_X_PROXY_REMOTE_ADDR'] = request.META['REMOTE_ADDR']
-            request.META['REMOTE_ADDR'] = parts[0]
-
-        return response
-
-
 class UserLanguagePreferenceMiddleware:
 
     def __init__(self, get_response):
@@ -126,9 +107,7 @@ class UserLanguagePreferenceMiddleware:
                                 httponly=settings.LANGUAGE_COOKIE_HTTPONLY,
                                 samesite=settings.LANGUAGE_COOKIE_SAMESITE,
                             )
-
                         break
-
                     except (Exception, IndexError):
                         pass
 

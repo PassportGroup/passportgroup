@@ -2,54 +2,21 @@
   <div class="my-2 mx-5">
     <BreadCrumb :page-routes="pagesRoutes" :active-link="activeLink"/>
      <form @submit.prevent="filterEmails()" class="flex items-center text-center justify-center mt-10 flex-nowrap w-full">
-       <div class="bg-gray-100 border border-gray-500 rounded shadow:md px-4 w-3/5">
-         <date-range-picker
-             class="w-full"
-             ref="mailPicker"
-             :showWeekNumbers="true"
-             v-model="mailRange">
-           <!--    header slot-->
-            <div slot="header" slot-scope="header" class="slot">
-              <h3>Select Date range</h3> <span v-if="header.in_selection"> - in selection</span>
-            </div>
-            <!--    input slot (new slot syntax)-->
-            <template slot="input" slot-scope="picker" class="w-full w-96 flex flex-wrap">
-              <span class="text-gray-800 italic" v-if="picker.startDate === null && picker.endDate === null">
-                Select date range
-              </span>
-              <span v-else class="text-gray-800">
-                {{ picker.startDate | date }} - {{ picker.endDate | date }}
-              </span>
-            </template>
-            <!--    date slot-->
-            <template #date="data">
-              <span class="small text-gray-900">{{ data.date | dateCell }}</span>
-            </template>
-            <!--    ranges (new slot syntax) -->
-            <template #ranges="ranges">
-              <div class="ranges text-gray-900">
-                <ul>
-                  <li v-for="(range, name) in ranges.ranges" :key="name" @click="ranges.clickRange(range)">
-                    <b>{{ name }}</b> <small class="text-muted">{{ range[0].toDateString() }} -
-                    {{ range[1].toDateString() }}</small>
-                  </li>
-                </ul>
-              </div>
-            </template>
-            <!--    footer slot-->
-            <div slot="footer" slot-scope="data" class="slot py-2 px-4">
-              <div>
-                <b class="text-black">Chosen Dates </b> {{ data.rangeText }}
-              </div>
-              <div style="margin-left: auto">
-                <a @click="data.clickApply" v-if="!data.in_selection" class="cursor-pointer px-4 text-xs rounded py-1 bg-gray-800">Apply</a>
-              </div>
-            </div>
-       </date-range-picker>
+       <div class="bg-gray-100 shadow:md px-4 w-3/5">
+          <litepie-datepicker
+             :class="'mx-4 z-9999'"
+             placeholder="Enter dates"
+             separator=" to "
+             :formatter="mailDateFormat"
+             :i18n="$i18n.locale"
+             v-model="mailRange"/>
+          <div v-if="$v.mailRange.$error" class="text-red-600 text-center justify-center pl-4 font-bold mt-1 text-xs">
+           <span v-if="!$v.mailRange.required">Please choose dates for mail processing</span>
+         </div>
        </div>
        <button class="w-auto flex inline-flex justify-center items-center text-center mx-4 py-2 px-6 bg-yellow-800 text-white cursor-pointer rounded" type="submit">
          <icon name="filter" class="w-4 h-4 mx-2"/>
-         Filter Mails
+         {{ $t('general.filter') }} {{ $t('menu.mails') }}
        </button>
      </form>
     <div class="flex flex-col items-center justify-center m-auto my-8">
@@ -100,7 +67,10 @@ import EmptyList from "../../../global-components/EmptyList"
 import PassportLoader from "../../../global-components/PassportLoader"
 import MailListing from "../../../global-components/MailListing"
 import MailItem from "../../../global-components/MailItem"
-import i18n from "../../../i18n";
+import i18n from "../../../i18n"
+import { required } from "vuelidate/lib/validators"
+import LitepieDatepicker from  "vue2-litepie-datepicker"
+
 
 export default {
   name: "DashboardMailIndex",
@@ -111,10 +81,16 @@ export default {
     PassportLoader,
     MailListing,
     MailItem,
+    LitepieDatepicker,
   },
   props: {
     mails: Array,
   },
+  validations() {
+        return {
+            mailRange: { required },
+        }
+    },
   filters: {
      dateCell (value) {
       let dt = new Date(value)
@@ -139,17 +115,21 @@ export default {
                     link : this.route('dashboard.index')
                 },
             ],
-          activeLink: 'Mails',
+          activeLink: i18n.t('menu.mails'),
           query: '',
           processingMails: false,
           is_filtering: false,
           isAllSelected: false,
           showProcessingButton: false,
-          mailRange: {
-            startDate: null,
-            endDate: null
+          selected_mails: [],
+          mailRange: this.start_date ? {
+             startDate: moment(this.start_date).format('DD MMM YYYY'),
+             endDate: moment(this.end_date).format('DD MMM YYYY')
+           } : [],
+          mailDateFormat: {
+            date: 'DD MMM YYYY',
+            month: 'MMM'
           },
-          selected_mails: []
         }
     },
   methods: {
@@ -170,22 +150,29 @@ export default {
       }
     },
     filterEmails() {
-      this.is_filtering = true
-      this.$inertia.get(this.route('dashboard.mails.index'), {
-        q: this.query,
-        start_date: this.mailRange.startDate,
-        end_date: this.mailRange.endDate,
-      }, {
-        replace: true,
-        preserveState: true,
-        preserveScroll: true,
-        onStart: () => {
-          this.is_filtering = true;
-        },
-        onFinish: () => {
-          this.is_filtering = false;
-        },
-      })
+      this.$v.$touch()
+      if (this.$v.$invalid) {
+        this.is_filtering = false
+      } else {
+        this.isAllSelected = false
+        this.selected_mails = []
+        this.is_filtering = true
+        this.$inertia.get(this.route('dashboard.mails.index'), {
+          q: this.query,
+          start_date: this.mailRange[0],
+          end_date: this.mailRange[1],
+        }, {
+          replace: true,
+          preserveState: true,
+          preserveScroll: true,
+          onStart: () => {
+            this.is_filtering = true;
+          },
+          onFinish: () => {
+            this.is_filtering = false;
+          },
+        })
+      }
     },
     processMails() {
       let vm = this
