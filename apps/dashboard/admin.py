@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import PassportMail, PassportGroupTasks
+from .models import PassportMail, PassportGroupTask
 
 
 # Register your models here.
@@ -10,8 +10,8 @@ class PassportMailAdmin(admin.ModelAdmin):
 
 
 class PassportGroupTaskAdmin(admin.ModelAdmin):
-    list_display = ('name', 'frequency', 'start_date', 'end_date')
-    search_fields = ('name', 'frequency',)
+    list_display = ('name', 'cron_expression', 'start_date', 'end_date')
+    search_fields = ('name', 'cron_expression',)
     ordering = ('-name',)
 
     filter_horizontal = ()
@@ -20,4 +20,4 @@ class PassportGroupTaskAdmin(admin.ModelAdmin):
 
 
 admin.site.register(PassportMail, PassportMailAdmin)
-admin.site.register(PassportGroupTasks, PassportGroupTaskAdmin)
+admin.site.register(PassportGroupTask, PassportGroupTaskAdmin)

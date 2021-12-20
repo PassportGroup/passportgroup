@@ -27,21 +27,21 @@
                       +3.1%
                     </span>
                 </div>
-                <div><icon name="users" class="w-10 h-10 text-gray-300"/></div>
+                <div><icon name="users" class="w-10 h-10 text-gray-700"/></div>
             </a>
             <a
                 :href="'#'"
                 class="flex items-center justify-between p-4 intro-y bg-white box zoom-in rounded-md dark:bg-darker">
                 <div>
                     <h6 class="text-xs my-1 font-medium leading-none tracking-wider text-gray-500 uppercase dark:text-primary-light">
-                        Partners
+                        Portugal Records
                     </h6>
-                    <span class="text-xl font-semibold">{{ $h.kNumber(50) }}</span>
+                    <span class="text-xl font-semibold">{{ $h.kNumber(4678) }}</span>
                     <span class="inline-block px-2 py-px ml-2 text-xs text-green-500 bg-green-100 rounded-md">
                       +2.6%
                     </span>
                 </div>
-                <div><icon name="office-building" class="w-12 h-12 text-gray-300"/></div>
+                <div><icon name="document-report" class="w-10 h-10 text-theme-1"/></div>
             </a>
         </div>
     </div>

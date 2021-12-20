@@ -14,7 +14,7 @@ urlpatterns = [
 
     path('tasks', get_tasks_index, name='dashboard.tasks.index'),
     path('tasks/<str:slug>/', get_tasks_details, name='dashboard.tasks.detail'),
-    path('tasks/<str:slug>/update/', get_tasks_details, name='dashboard.tasks.update'),
+    path('tasks/<str:slug>/update/', update_tasks_details, name='dashboard.tasks.update'),
 ]
 
 

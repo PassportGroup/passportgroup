@@ -16,6 +16,10 @@ from django.urls import reverse
 import google.auth.transport.requests
 from oauth2client.client import flow_from_clientsecrets
 from apps.core.services.google_api.common import get_credential
+from django.http import JsonResponse
+
+from .models import PassportMail, PassportGroupTask
+from .serializers import PassportMailSchema, PassportGroupTaskSchema
 
 
 SCOPES = [
@@ -144,17 +148,61 @@ def google_authenticate(request, **kwargs):
 
 @login_required
 def get_tasks_index(request):
+    page = request.GET.get('page', None)
+    tasks = PassportGroupTask.objects.all().order_by('-created_at')
+    passport_tasks_schema = PassportGroupTaskSchema(
+        many=True,
+        only=('name', 'slug', 'excerpt', 'start_date', 'extra_parameters', 'end_date', 'status', 'created_at',
+              'updated_at'),
+    )
+    if page:
+        page_size = request.GET.get('page_size', 20)
+        tasks, links = paginate(
+            objects=passport_tasks_schema,
+            current_url=request.build_absolute_uri(),
+            items_per_page=page_size,
+            current_page=page
+        )
+        return JsonResponse({'tasks': passport_tasks_schema.dump(tasks)})
+
     return render_inertia(
         request,
         'Dashboard/Tasks/Index',
-        props={}
+        props={
+            'tasks': passport_tasks_schema.dump(tasks),
+        }
     )
 
 
 @login_required
 def get_tasks_details(request, slug):
+    try:
+        task = PassportGroupTask.objects.get(slug=slug)
+    except PassportGroupTask.DoesNotExist:
+        task = None
+
     return render_inertia(
         request,
         'Dashboard/Tasks/Details',
-        props={}
+        props={
+            'task': PassportGroupTaskSchema(exclude=('excerpt',)).dump(task) if task else None,
+        }
+    )
+
+
+@login_required
+def update_tasks_details(request, slug):
+    try:
+        task = PassportGroupTask.objects.get(slug=slug)
+        if request.POST:
+            task.save()
+    except PassportGroupTask.DoesNotExist:
+        task = None
+
+    return render_inertia(
+        request,
+        'Dashboard/Tasks/Edit',
+        props={
+            'task': PassportGroupTaskSchema(exclude=('excerpt',)).dump(task) if task else None,
+        }
     )

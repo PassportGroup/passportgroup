@@ -13,6 +13,8 @@ import i18n from "./i18n"
 import  "./utils"
 import store from "./store"
 import "./global-components"
+const moment = require('moment')
+require('moment/locale/es')
 import InfiniteLoading from 'vue-infinite-loading'
 
 window.Vue = Vue;
@@ -33,6 +35,13 @@ Vue.use(VuePusher, {
     authTransport: 'jsonp',
   }
 })
+
+Vue.use(require('vue-moment'), {
+    moment
+})
+
+Vue.prototype.$moment.locale(i18n.locale)
+
 Pusher.logToConsole = (process.env.MIX_APP_ENV !== "production");
 
 InertiaProgress.init({delay: 250, color: '#fa8f05'})

@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 from apps.account.models import Account as PassportAccount
-from apps.dashboard.models import PassportMail, PassportGroupTasks
+from apps.dashboard.models import PassportMail, PassportGroupTask
 
 
 MODE_REFRESH = 'refresh'
@@ -19,7 +19,7 @@ class Command(BaseCommand):
         if hard:
             PassportAccount.objects.all().delete()
         PassportMail.objects.all().delete()
-        PassportGroupTasks.objects.all().delete()
+        PassportGroupTask.objects.all().delete()
         self.stdout.write('Truncating Completed! 🤩')
 
     def handle(self, *args, **options):
