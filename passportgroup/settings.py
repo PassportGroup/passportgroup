@@ -39,7 +39,7 @@ else:
 if os.getenv('APP_ENV') == 'local':
     ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 else:
-    ALLOWED_HOSTS = ['5.189.177.4']
+    ALLOWED_HOSTS = ['5.189.177.4', 'ctrl.passportgroup.co.il']
 
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'gmail_credentials.json')
@@ -57,7 +57,6 @@ LOGOUT_REDIRECT_URL = 'home'
 # Application definition
 
 INSTALLED_APPS = [
-    # 'apps.core',
     'django.contrib.admin',
     'corsheaders',
     'django.contrib.auth',
@@ -69,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'apps.dashboard',
     'apps.account',
+    'apps.core',
     'channels',
     'rest_framework',
     'inertia',
