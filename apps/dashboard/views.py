@@ -1,3 +1,4 @@
+import inertia.views
 from inertia.share import share_flash
 from django.contrib.auth.decorators import login_required
 from inertia.views import render_inertia
@@ -137,7 +138,7 @@ def google_authenticate(request, **kwargs):
                     credentials.refresh(request)
                 else:
                     authorization_url = FLOW.step1_get_authorize_url()
-                    return HttpResponseRedirect(authorization_url)
+                    return inertia.views.HttpResponseRedirect(authorization_url)
             else:
                 share_flash(request, success=_("Access granted already!"))
         except Exception as e:

@@ -193,12 +193,12 @@
                                     <h2 class="text-xl font-bold text-gray-600">PassportGroup</h2>
                                     <h2 class="text-x2 font-bold text-gray-600">{{ $page.props.auth.email }}</h2>
                                     <div class="my-3" v-if="!$page.props.google_access">
-                                      <inertia-link
+                                      <a
                                           :href="route('dashboard.google.auth')"
                                           class="inline-flex items-center justify-center uppercase font-bold py-3 px-4 bg-yellow-500 text-sm font-medium rounded text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-body focus:ring-green-500">
                                         <icon name="google-logo" class="h-5 w-5 mx-1.5"/>
                                        Grant Access
-                                      </inertia-link>
+                                      </a>
                                     </div>
                                 </div>
                                 <div class="space-y-2 p-2">

@@ -41,6 +41,15 @@ if os.getenv('APP_ENV') == 'local':
 else:
     ALLOWED_HOSTS = ['5.189.177.4', 'ctrl.passportgroup.co.il']
 
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "https://ctrl.passportgroup.co.il",
+    "http://5.189.177.4",
+    "https://5.189.177.4",
+)
+
 
 GOOGLE_OAUTH2_CLIENT_SECRETS_JSON = os.path.join(BASE_DIR, 'gmail_credentials.json')
 
@@ -58,7 +67,6 @@ LOGOUT_REDIRECT_URL = 'home'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
-    'corsheaders',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -76,26 +84,26 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'meta',
     'js_routes',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'apps.core.middleware.TriggerErrorsResponseAndReturnInertiaResponse',
     'apps.core.middleware.UserLanguagePreferenceMiddleware',
     'apps.core.middleware.GenerateUserCookieMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
+    "corsheaders.middleware.CorsPostCsrfMiddleware",
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'apps.core.middleware.XForwardedForMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
-
-CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'passportgroup.urls'
 
