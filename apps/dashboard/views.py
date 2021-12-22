@@ -8,7 +8,6 @@ from apps.core.services.gmail_api.read_emails import read_message
 from django.utils.translation import gettext as _
 from apps.utils import *
 from oauth2client.contrib.django_util.storage import DjangoORMStorage
-from django.http import HttpResponseRedirect
 from passportgroup import settings
 from apps.account.models import CredentialsModel
 from googleapiclient.discovery import build
@@ -22,6 +21,10 @@ from django.http import JsonResponse
 from .models import PassportMail, PassportGroupTask
 from .serializers import PassportMailSchema, PassportGroupTaskSchema
 
+if os.getenv('APP_ENV') == 'production':
+    REDIRECT_URL = 'https://ctrl.passportgroup.co.il/dashboard/oauth/google/callback/'
+else:
+    REDIRECT_URL = 'http://127.0.0.1:8000/dashboard/oauth/google/callback/'
 
 SCOPES = [
     'https://mail.google.com/',
@@ -34,7 +37,7 @@ FLOW = flow_from_clientsecrets(
         settings.GOOGLE_OAUTH2_CLIENT_SECRETS_JSON,
         scope=SCOPES,
         prompt='consent',
-        redirect_uri='http://127.0.0.1:8000/dashboard/oauth/google/callback/',
+        redirect_uri=REDIRECT_URL,
 )
 
 
